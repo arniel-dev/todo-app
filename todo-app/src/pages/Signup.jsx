@@ -98,14 +98,14 @@ export default function Signup() {
           className="bg-gradient-to-r dark:text-gray-300 from-blue-500 to-purple-500 shadow-lg mt-6 p-2 text-white rounded-lg w-full hover:scale-105 hover:from-purple-500 hover:to-blue-500 transition duration-300 ease-in-out"
           type="submit"
         >
-          Sign Up
+          SIGN UP
         </button>
       </form>
       <div className="text-gray-500 flex text-center flex-col mt-4 items-center text-sm">
         <p className="text-sm">
           Already have an account?
-          <Link to="/login" className="text-blue-500">
-            Login
+          <Link to="/login" className="m-1 text-blue-500">
+            Log in
           </Link>
         </p>
       </div>

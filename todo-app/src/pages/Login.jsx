@@ -87,27 +87,10 @@ export default function Login() {
             to="/signup"
           >
             <span className="m-1 bg-left-bottom bg-gradient-to-r from-blue-400 to-blue-400 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
-              Sign Up
+              Create a new account
             </span>
           </Link>
         </h3>
-      </div>
-
-      <div className="text-gray-500 flex text-center flex-col mt-4 items-center text-sm">
-        <p className="cursor-default">
-          By signing in, you agree to our
-          <Link className="group text-blue-400 transition-all duration-100 ease-in-out">
-            <span className="m-1 cursor-pointer bg-left-bottom bg-gradient-to-r from-blue-400 to-blue-400 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
-              Terms
-            </span>
-          </Link>
-          and
-          <Link className="group text-blue-400 transition-all duration-100 ease-in-out">
-            <span className="m-1 cursor-pointer bg-left-bottom bg-gradient-to-r from-blue-400 to-blue-400 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
-              Privacy Policy
-            </span>
-          </Link>
-        </p>
       </div>
     </FormLayout>
   );
