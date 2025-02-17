@@ -7,7 +7,7 @@ import Loader from "./components/Loader";
 // Lazy load pages
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
+const TaskBoard = lazy(() => import("./pages/TaskBoard"));
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -20,7 +20,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             path="/"
             element={
               <PrivateRoute>
-                <Dashboard />
+                <TaskBoard />
               </PrivateRoute>
             }
           />
