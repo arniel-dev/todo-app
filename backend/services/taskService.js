@@ -29,3 +29,14 @@ export const getTask = async () => {
     throw new Error();
   }
 };
+export const deleteTask = async (id) => {
+  try {
+    const query = "DELETE FROM tasks WHERE id=?";
+
+    await pool.query(query, [id]);
+
+    return { success: true, message: "Task deleted successfully" };
+  } catch (error) {
+    throw new Error();
+  }
+};

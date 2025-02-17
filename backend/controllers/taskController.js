@@ -1,5 +1,5 @@
 import TaskModel from "../models/taskModel.js";
-import { addTask, getTask } from "../services/taskService.js";
+import { addTask, getTask, deleteTask } from "../services/taskService.js";
 
 export const createTask = async (req, res) => {
   const { category, description, priority, title, expiryDate } = req.body;
@@ -50,6 +50,23 @@ export const retrieveTask = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Retriving task failed. Please try again later.",
+    });
+  }
+};
+export const removeTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await deleteTask(id);
+    if (response.success) {
+      return res.status(200).json(response);
+    } else {
+      return res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error in deleting task:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Deleting task failed. Please try again later.",
     });
   }
 };
