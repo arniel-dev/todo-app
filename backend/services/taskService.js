@@ -40,3 +40,22 @@ export const deleteTask = async (id) => {
     throw new Error();
   }
 };
+export const taskUpdate = async (id, task) => {
+  try {
+    const query =
+      "UPDATE tasks SET title=?, description=?, category=?, priority=?, expiryDate=? WHERE id=?";
+    const values = [
+      task.title,
+      task.description,
+      task.category,
+      task.priority,
+      task.expiryDate,
+    ];
+
+    await pool.query(query, values);
+
+    return { success: true, message: "Task update successfully" };
+  } catch (error) {
+    throw new Error();
+  }
+};
