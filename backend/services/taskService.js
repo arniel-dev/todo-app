@@ -29,3 +29,33 @@ export const getTask = async () => {
     throw new Error();
   }
 };
+export const deleteTask = async (id) => {
+  try {
+    const query = "DELETE FROM tasks WHERE id=?";
+
+    await pool.query(query, [id]);
+
+    return { success: true, message: "Task deleted successfully" };
+  } catch (error) {
+    throw new Error();
+  }
+};
+export const taskUpdate = async (id, task) => {
+  try {
+    const query =
+      "UPDATE tasks SET title=?, description=?, category=?, priority=?, expiryDate=? WHERE id=?";
+    const values = [
+      task.title,
+      task.description,
+      task.category,
+      task.priority,
+      task.expiryDate,
+    ];
+
+    await pool.query(query, values);
+
+    return { success: true, message: "Task update successfully" };
+  } catch (error) {
+    throw new Error();
+  }
+};
