@@ -15,7 +15,6 @@ export default function TaskBoard() {
   }, []);
 
   const handleAddTask = async () => {
-    if (!newTask.title) return alert("Title is required");
     await addTask(newTask);
     setNewTask({
       title: "",

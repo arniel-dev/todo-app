@@ -1,5 +1,5 @@
 import TaskModel from "../models/taskModel.js";
-import { addTask } from "../services/taskService.js";
+import { addTask, getTask } from "../services/taskService.js";
 
 export const createTask = async (req, res) => {
   const { category, description, priority, title, expiryDate } = req.body;
@@ -29,10 +29,27 @@ export const createTask = async (req, res) => {
       return res.status(400).json(response);
     }
   } catch (error) {
-    console.error("Error in user create task:", error);
+    console.error("Error in create task:", error);
     return res.status(500).json({
       success: false,
       message: "Create task failed. Please try again later.",
+    });
+  }
+};
+
+export const retrieveTask = async (req, res) => {
+  try {
+    const response = await getTask();
+    if (response.success) {
+      return res.status(200).json(response.data);
+    } else {
+      return res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error in retriving tasks:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Retriving task failed. Please try again later.",
     });
   }
 };
