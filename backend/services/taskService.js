@@ -18,3 +18,14 @@ export const addTask = async (task) => {
     throw new Error();
   }
 };
+export const getTask = async () => {
+  try {
+    const query = "SELECT * FROM tasks";
+
+    const [tasks] = await pool.query(query);
+
+    return { success: true, data: tasks };
+  } catch (error) {
+    throw new Error();
+  }
+};
