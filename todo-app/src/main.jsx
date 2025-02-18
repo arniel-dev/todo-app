@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import "./index.css";
 import Loader from "./components/Loader";
+import CategoryManagement from "./pages/CategoryManagement";
 // Lazy load pages
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -16,14 +17,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <TaskBoard />
-              </PrivateRoute>
-            }
-          />
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<TaskBoard />} />
+            <Route path="/manage-category" element={<CategoryManagement />} />
+          </Route>
         </Routes>
       </Suspense>
     </BrowserRouter>
