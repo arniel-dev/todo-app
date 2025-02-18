@@ -4,11 +4,11 @@ const createTaskTableQuery = `CREATE TABLE IF NOT EXISTS tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    category ENUM('To Do', 'In Progress', 'Done') DEFAULT 'To Do',
-    priority ENUM('Low', 'Medium', 'High') DEFAULT 'Medium',
+    category VARCHAR(255) NOT NULL,
+    priority VARCHAR(255) NOT NULL,
     expiryDate DATETIME NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);;`;
+);`;
 
 const createCategoriesQuery = `CREATE TABLE IF NOT EXISTS categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,7 +26,7 @@ const createTable = async (tableName, query) => {
   }
 };
 
-const createAllTable = async () => {
+export const createAllTable = async () => {
   try {
     await createTable("tasks", createTaskTableQuery);
     await createTable("categories", createCategoriesQuery);
@@ -36,4 +36,18 @@ const createAllTable = async () => {
   }
 };
 
-export default createAllTable;
+export const insertDefaultValues = async () => {
+  try {
+    const [row] = await pool.query("SELECT * FROM categories");
+    if (row.length === 0) {
+      await pool.query(
+        `INSERT INTO categories (name) VALUES 
+        ("Todo"),
+        ("In Progress"),
+        ("Done")`
+      );
+    }
+  } catch (error) {
+    console.log(`something went wrong ${error}`);
+  }
+};

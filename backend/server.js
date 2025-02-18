@@ -2,7 +2,7 @@ import express, { json } from "express";
 import cors from "cors";
 import { config } from "dotenv";
 import { checkConnection } from "./config/db.js";
-import createAllTable from "./utils/dbUtils.js";
+import { createAllTable, insertDefaultValues } from "./utils/dbUtils.js";
 import { createDatabase } from "./config/createDatabase.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
@@ -31,6 +31,7 @@ app.listen(PORT, async () => {
     await createDatabase();
     await checkConnection();
     await createAllTable();
+    await insertDefaultValues();
   } catch (error) {
     console.log("fail connection mysql DB", error);
   }
