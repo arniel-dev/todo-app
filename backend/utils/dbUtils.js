@@ -42,7 +42,7 @@ export const insertDefaultValues = async () => {
     if (row.length === 0) {
       await pool.query(
         `INSERT INTO categories (name) VALUES 
-        ("Todo"),
+        ("To Do"),
         ("In Progress"),
         ("Done")`
       );
