@@ -1,17 +1,28 @@
-import { Navigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
-import PropTypes from "prop-types";
 import Loader from "../components/Loader";
-function PrivateRoute({ children }) {
+import { useEffect } from "react";
+function PrivateRoute() {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
 
-  if (user === undefined) {
-    return <Loader />;
-  }
+  useEffect(() => {
+    if (user === null) {
+      navigate("/login");
+    }
+  }, [user]);
 
-  return user ? children : <Navigate to="/login" />;
+  return (
+    <>
+      {user === undefined ? (
+        <Loader />
+      ) : (
+        <>
+          <Outlet />
+        </>
+      )}
+    </>
+  );
 }
-PrivateRoute.propTypes = {
-  children: PropTypes.node,
-};
+
 export default PrivateRoute;

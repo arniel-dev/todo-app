@@ -2,15 +2,38 @@ import { useEffect, useState } from "react";
 import { useTaskStore } from "../store/taskStore";
 
 export default function TaskBoard() {
-  const { tasks, fetchTasks, addTask, deleteTask } = useTaskStore();
+  const {
+    tasks,
+    fetchTasks,
+    addTask,
+    deleteTask,
+    categories,
+    moveTask,
+    fetchCategories,
+  } = useTaskStore();
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
     category: "To Do",
     priority: "Medium",
   });
+  const [draggingTask, setDraggingTask] = useState(null);
+  const handleDragStart = (e, taskId) => {
+    setDraggingTask(taskId);
+  };
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (category) => {
+    if (draggingTask) {
+      moveTask(draggingTask, category);
+      setDraggingTask(null);
+    }
+  };
 
   useEffect(() => {
+    fetchCategories();
     fetchTasks();
   }, []);
 
@@ -71,23 +94,25 @@ export default function TaskBoard() {
       </div>
 
       {/* Task List */}
-      <div className="grid grid-cols-3 gap-4 mt-6">
-        {["To Do", "In Progress", "Done"].map((category) => (
-          <div key={category} className="p-4 bg-gray-100 rounded shadow">
-            <h2 className="text-xl font-bold">{category}</h2>
+      <div className="flex gap-4 p-4">
+        {categories.map((category) => (
+          <div
+            key={category}
+            className="w-1/3 bg-gray-100 p-4 rounded-lg shadow-md"
+            onDragOver={handleDragOver}
+            onDrop={() => handleDrop(category)}
+          >
+            <h2 className="font-bold text-lg mb-2">{category}</h2>
             {tasks
               .filter((task) => task.category === category)
               .map((task) => (
-                <div key={task.id} className="p-2 mt-2 border rounded bg-white">
-                  <h3 className="font-bold">{task.title}</h3>
-                  <p className="text-sm">{task.description}</p>
-                  <p className="text-xs">Priority: {task.priority}</p>
-                  <button
-                    onClick={() => deleteTask(task.id)}
-                    className="text-red-500 mt-1"
-                  >
-                    Delete
-                  </button>
+                <div
+                  key={task.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, task.id)}
+                  className="bg-white p-2 my-2 rounded shadow cursor-pointer"
+                >
+                  {task.title}
                 </div>
               ))}
           </div>
