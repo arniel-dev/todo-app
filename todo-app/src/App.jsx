@@ -1,12 +1,30 @@
-import "./App.css";
+import React, { Suspense, lazy } from "react";
 
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import PrivateRoute from "./routes/PrivateRoute";
+import "./App.scss";
+import "./styles/global.scss";
+
+import Loader from "./components/Loader";
+import CategoryManagement from "./pages/CategoryManagement";
+
+// Lazy load pages
+const Login = lazy(() => import("./pages/Login"));
+const TaskBoard = lazy(() => import("./pages/TaskBoard"));
 function App() {
   return (
-    <>
-      <h1 className="text-4xl font-bold text-red-500">
-        Hello, Vite + Tailwind! 🎉
-      </h1>
-    </>
+    <BrowserRouter>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<TaskBoard />} />
+            <Route path="/manage-category" element={<CategoryManagement />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
   );
 }
 

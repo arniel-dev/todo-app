@@ -1,28 +1,8 @@
-import { Outlet, useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
-import Loader from "../components/Loader";
-import { useEffect } from "react";
-function PrivateRoute() {
-  const { user } = useAuthStore();
-  const navigate = useNavigate();
+import { Navigate, Outlet } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
-  useEffect(() => {
-    if (user === null) {
-      navigate("/login");
-    }
-  }, [user]);
-
-  return (
-    <>
-      {user === undefined ? (
-        <Loader />
-      ) : (
-        <>
-          <Outlet />
-        </>
-      )}
-    </>
-  );
-}
-
-export default PrivateRoute;
+const PrivateRoutes = () => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Outlet /> : <Navigate to={"/login"} />;
+};
+export default PrivateRoutes;

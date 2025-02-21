@@ -11,16 +11,25 @@ export default function TaskBoard() {
     moveTask,
     fetchCategories,
   } = useTaskStore();
+
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
     category: "To Do",
     priority: "Medium",
   });
+
   const [draggingTask, setDraggingTask] = useState(null);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchTasks();
+  }, []);
+
   const handleDragStart = (e, taskId) => {
     setDraggingTask(taskId);
   };
+
   const handleDragOver = (e) => {
     e.preventDefault();
   };
@@ -31,11 +40,6 @@ export default function TaskBoard() {
       setDraggingTask(null);
     }
   };
-
-  useEffect(() => {
-    fetchCategories();
-    fetchTasks();
-  }, []);
 
   const handleAddTask = async () => {
     await addTask(newTask);

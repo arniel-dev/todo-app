@@ -1,11 +1,5 @@
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  onAuthStateChanged,
-  setPersistence,
-  browserLocalPersistence,
-} from "firebase/auth";
-import { useAuthStore } from "./store/authStore";
+import { getAuth } from "firebase/auth";
 
 const API_key = import.meta.env.VITE_API_KEY;
 const VITE_AUTH_DOMAIN = import.meta.env.VITE_AUTH_DOMAIN;
@@ -27,19 +21,5 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-// Enable persistent authentication
-setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    console.log("Firebase Auth Persistence Enabled");
-  })
-  .catch((error) => {
-    console.error("Error enabling persistence:", error);
-  });
-
-// Restore user on page refresh
-onAuthStateChanged(auth, (user) => {
-  const { setUser } = useAuthStore.getState();
-  setUser(user || null);
-});
 
 export default app;

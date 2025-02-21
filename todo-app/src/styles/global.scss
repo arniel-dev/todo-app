@@ -1,0 +1,107 @@
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f5f7;
+    color: #172b4d;
+  }
+  
+h1 {
+    font-size: 24px;
+    color: #172b4d;
+    margin-bottom: 20px;
+  }
+
+
+  // Define global variables
+:root {
+    --primary-color: #5AB2FF; // Blue-500
+    --secondary-color: #A0DEFF; // Purple-500
+    --bg-color: #ffffff; // White
+    --dark-bg-color: #1a1a1a; // Dark mode background
+    --text-color: #374151; // Gray-700
+    --dark-text-color: #d1d5db; // Gray-300 for dark mode
+    --link-color: #60a5fa; // Blue-400
+    --link-color-dark: color-mix(in srgb, var(--link-color), black 10%); // Darkened color
+    --blue: #3b82f6; // Blue-500
+    --purple: #a855f7; // Purple-500
+    --black: #000000;
+    --white: #ffffff;
+    --gray: #efefef;
+    --gray-2: #757575;
+  
+    --border-radius: 20px;
+  }
+  
+  // Dark mode styles
+  [data-theme="dark"] {
+    --bg-color: var(--dark-bg-color);
+    --text-color: var(--dark-text-color);
+  }
+  
+  // Global styles
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  // Utility classes
+  .flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  // Link styles
+  a {
+    color: var(--link-color);
+    transition: all 0.1s ease-in-out;
+
+    span {
+      cursor: pointer;
+      background-image: linear-gradient(to right, var(--blue), var(--purple));
+      background-size: 0% 4px;
+      background-repeat: no-repeat;
+      background-position: left bottom;
+      transition: all 0.5s ease-out;
+
+      &:hover {
+        background-size: 100% 2px;
+      }
+    }
+  }
+  
+  // Button styles
+  .button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  
+    &:hover {
+      filter: brightness(80%); 
+    }
+  }
+  
+  @mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
