@@ -1,19 +1,31 @@
 import { pool } from "../config/db.js";
 
-const createTaskTableQuery = `CREATE TABLE IF NOT EXISTS tasks (
+const createTicketsTableQuery = `CREATE TABLE IF NOT EXISTS tickets (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    category VARCHAR(255) NOT NULL,
-    priority VARCHAR(255) NOT NULL,
-    expiryDate DATETIME NULL,
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  expiry_date DATETIME,
+  priority VARCHAR(50),
+  category_id INT,
+  user_id INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES categories(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );`;
 
 const createCategoriesQuery = `CREATE TABLE IF NOT EXISTS categories (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  user_id INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+`;
+const createUsersQuery = `CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  firebase_uid VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 
@@ -28,8 +40,10 @@ const createTable = async (tableName, query) => {
 
 export const createAllTable = async () => {
   try {
-    await createTable("tasks", createTaskTableQuery);
+    await createTable("users", createUsersQuery);
     await createTable("categories", createCategoriesQuery);
+    await createTable("tickets", createTicketsTableQuery);
+
     console.log(`all tables created successfully.`);
   } catch (error) {
     console.log(`something went wrong ${error}`);

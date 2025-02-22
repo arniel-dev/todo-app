@@ -5,7 +5,7 @@ function Link({ sx, href, target, rel, children, ...props }) {
   const styles = {
     link: {
       ...sx,
-      margin: 2,
+      margin: "0.25rem",
     },
   };
 

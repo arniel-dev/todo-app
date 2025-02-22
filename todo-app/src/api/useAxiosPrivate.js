@@ -6,7 +6,6 @@ const useAxios = () => {
   const axiosPrivate = axios.create({
     baseURL: BASE_URL,
     headers: { "Content-Type": "application/json" },
-    withCredentials: true,
   });
 
   return axiosPrivate;
