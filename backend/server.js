@@ -6,7 +6,7 @@ import { createAllTable, insertDefaultValues } from "./utils/dbUtils.js";
 import { createDatabase } from "./config/createDatabase.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
-
+import userRoutes from "./routes/userRoutes.js";
 const app = express();
 config();
 
@@ -23,6 +23,7 @@ app.use(json());
 
 app.use("/api", taskRoutes);
 app.use("/api", categoryRoutes);
+app.use("/api", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {

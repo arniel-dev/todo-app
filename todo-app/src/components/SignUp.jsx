@@ -25,7 +25,6 @@ const formSchema = yup.object().shape({
 });
 
 const SignUp = ({ toggle }) => {
-  // const { setUser } = useAuthStore();
   const navigate = useNavigate();
   const {
     register,
@@ -84,7 +83,7 @@ const SignUp = ({ toggle }) => {
             error={!!errors.confirmPassword}
             helperText={errors?.confirmPassword?.message}
           />
-          <Button sx={{ marginTop: 16 }} type="submit" variant="contained">
+          <Button sx={{ margin: "16px 0 16px" }} type="submit">
             Sign up
           </Button>
           <div>

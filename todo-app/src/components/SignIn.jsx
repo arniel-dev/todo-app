@@ -31,10 +31,11 @@ const SignIn = ({ toggle }) => {
 
   const onSubmit = async (data) => {
     try {
-      const userCredential = await signIn(data.email, data.password);
-      console.log(userCredential);
+      await signIn(data.email, data.password).then((userCredential) =>
+        login(userCredential?.user?.accessToken)
+      );
+
       navigate("/", { replace: true });
-      login(userCredential?.user?.accessToken);
     } catch (error) {
       alert(error.message);
     }
@@ -61,10 +62,10 @@ const SignIn = ({ toggle }) => {
             error={!!errors.password}
             helperText={errors?.password?.message}
           />
-          <Button sx={{ marginTop: 16 }} type="submit" variant="contained">
+          <Button sx={{ margin: "16px 0 16px" }} type="submit">
             Sign in
           </Button>
-          <div>
+          <div style={{ margin: 8 }}>
             <span>Don't have an account?</span>
             <Link onClick={toggle} aria-label="">
               Sign up here
