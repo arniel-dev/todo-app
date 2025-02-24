@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTaskStore } from "../store/taskStore";
+import useTicketStore from "../store/ticketStore";
 
 const CategoryManagement = () => {
   const {
@@ -8,7 +8,7 @@ const CategoryManagement = () => {
     addCategory,
     deleteCategory,
     updateCategory,
-  } = useTaskStore();
+  } = useTicketStore();
   const [newCategory, setNewCategory] = useState("");
   const [editCategory, setEditCategory] = useState(null);
   const [updatedCategory, setUpdatedCategory] = useState("");
