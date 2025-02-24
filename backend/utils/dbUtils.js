@@ -49,19 +49,3 @@ export const createAllTable = async () => {
     console.log(`something went wrong ${error}`);
   }
 };
-
-export const insertDefaultValues = async () => {
-  try {
-    const [row] = await pool.query("SELECT * FROM categories");
-    if (row.length === 0) {
-      await pool.query(
-        `INSERT INTO categories (name) VALUES 
-        ("To Do"),
-        ("In Progress"),
-        ("Done")`
-      );
-    }
-  } catch (error) {
-    console.log(`something went wrong ${error}`);
-  }
-};

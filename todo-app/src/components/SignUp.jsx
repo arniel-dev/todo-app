@@ -50,7 +50,6 @@ const SignUp = ({ toggle }) => {
           direction="column"
         >
           <TextField
-            id="fullname"
             label="Full Name"
             {...register("fullname")}
             variant="outlined"
@@ -58,7 +57,6 @@ const SignUp = ({ toggle }) => {
             helperText={errors?.fullname?.message}
           />
           <TextField
-            id="email"
             label="Email"
             {...register("email")}
             variant="outlined"
@@ -66,7 +64,6 @@ const SignUp = ({ toggle }) => {
             helperText={errors?.email?.message}
           />
           <TextField
-            id="password"
             label="Password"
             type="password"
             {...register("password")}
@@ -75,7 +72,6 @@ const SignUp = ({ toggle }) => {
             helperText={errors?.password?.message}
           />
           <TextField
-            id="confirmPassword"
             label="Confirm Password"
             type="password"
             {...register("confirmPassword")}

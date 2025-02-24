@@ -7,8 +7,9 @@ import {
   signOut,
 } from "firebase/auth";
 
+const axios = axiosPrivate();
+
 export const signUp = async (fullname, email, password) => {
-  const axios = axiosPrivate();
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     email,
@@ -24,7 +25,12 @@ export const signUp = async (fullname, email, password) => {
 };
 
 export const signIn = async (email, password) => {
-  return signInWithEmailAndPassword(auth, email, password);
+  const userCreds = await signInWithEmailAndPassword(auth, email, password);
+  const response = await axios.get(
+    `api/user?firebase_uid=${userCreds.user.uid}`
+  );
+
+  return { ...userCreds.user, user: response?.data?.user };
 };
 
 export const logout = async () => {

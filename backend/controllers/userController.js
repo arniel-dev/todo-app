@@ -1,4 +1,4 @@
-import { createUser } from "../services/authService.js";
+import { createUser, getUser } from "../services/authService.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -19,6 +19,23 @@ export const registerUser = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Register user failed. Please try again later.",
+    });
+  }
+};
+
+export const retrieveUser = async (req, res) => {
+  try {
+    const { firebase_uid } = req.query;
+    const response = await getUser(firebase_uid);
+    if (response.success) {
+      return res.status(200).json(response.data);
+    } else {
+      return res.status(400).json(response);
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Retriving user failed. Please try again later.",
     });
   }
 };

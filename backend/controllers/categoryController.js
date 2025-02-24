@@ -2,7 +2,9 @@ import { getCategories, addCategory } from "../services/categoryService.js";
 
 export const retrieveCategories = async (req, res) => {
   try {
-    const response = await getCategories();
+    const { user_id } = req.query;
+
+    const response = await getCategories(user_id);
     if (response.success) {
       return res.status(200).json(response.data);
     } else {
