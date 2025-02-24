@@ -20,3 +20,13 @@ export const createUser = async (firebase_uid, email) => {
     throw new Error(error);
   }
 };
+
+export const getUser = async (firebase_uid) => {
+  try {
+    const query = "SELECT * FROM users WHERE firebase_uid = ?";
+    const [user] = await pool.query(query, [firebase_uid]);
+    return { success: true, data: { user: user[0] } };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};

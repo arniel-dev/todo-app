@@ -31,9 +31,8 @@ const SignIn = ({ toggle }) => {
 
   const onSubmit = async (data) => {
     try {
-      await signIn(data.email, data.password).then((userCredential) =>
-        login(userCredential?.user?.accessToken)
-      );
+      const userCredential = await signIn(data.email, data.password);
+      login(userCredential);
 
       navigate("/", { replace: true });
     } catch (error) {
