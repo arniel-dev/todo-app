@@ -4,7 +4,7 @@ import { config } from "dotenv";
 import { checkConnection } from "./config/db.js";
 import { createAllTable } from "./utils/dbUtils.js";
 import { createDatabase } from "./config/createDatabase.js";
-import taskRoutes from "./routes/taskRoutes.js";
+import ticketRoutes from "./routes/ticketRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 const app = express();
@@ -21,7 +21,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(json());
 
-app.use("/api", taskRoutes);
+app.use("/api", ticketRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", userRoutes);
 
