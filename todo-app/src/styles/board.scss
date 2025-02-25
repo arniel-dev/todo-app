@@ -12,7 +12,8 @@
     padding: 10px;
     min-width: 300px;
     max-width: 300px;
-    height: fit-content;
+    // height: fit-content;
+    height: auto;
   
     h2 {
       font-size: 16px;
@@ -25,6 +26,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    height: auto;
   }
   
   .ticket-card {
@@ -67,4 +69,15 @@
 .board {
     overflow-x: auto;
     padding-bottom: 20px; // Add space for scrollbar
+  }
+  .category-column {
+    &.dragging {
+      opacity: 0.5;
+    }
+  }
+  
+  .ticket-card {
+    &.dragging {
+      opacity: 0.5;
+    }
   }

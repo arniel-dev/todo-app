@@ -16,11 +16,12 @@ const createTicketsTableQuery = `CREATE TABLE IF NOT EXISTS tickets (
 const createCategoriesQuery = `CREATE TABLE IF NOT EXISTS categories (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  \`order\` INT,
   user_id INT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id)
-);
-`;
+);`;
+
 const createUsersQuery = `CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   firebase_uid VARCHAR(255) NOT NULL,
