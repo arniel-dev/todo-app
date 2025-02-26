@@ -85,7 +85,6 @@ function Board() {
   const handlePriorityDrop = (e, targetTicketId) => {
     e.preventDefault();
     const draggedTicketId = e.dataTransfer.getData("ticketId");
-
     if (draggedTicketId === targetTicketId) return;
 
     // Find the dragged and target tickets
@@ -93,7 +92,7 @@ function Board() {
       (ticket) => ticket.id == draggedTicketId
     );
     const targetTicket = tickets.find((ticket) => ticket.id == targetTicketId);
-
+    if (draggedTicket.category_id !== targetTicket.category_id) return; // should not trigger call if not same category
     // Swap their priority values
     handleUpdateTicketPriority(draggedTicketId, {
       ...draggedTicket,
