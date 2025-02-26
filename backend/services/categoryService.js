@@ -7,11 +7,11 @@ export const getCategories = async (user_id) => {
 
     // Insert Default Categories if none exist
     if (categories.length === 0) {
-      const insertQuery = `INSERT INTO categories (name, user_id) VALUES ?`;
+      const insertQuery = `INSERT INTO categories (name, user_id, \`order\`) VALUES ?`;
       const values = [
-        ["To Do", user_id],
-        ["In Progress", user_id],
-        ["Done", user_id],
+        ["To Do", user_id, 1],
+        ["In Progress", user_id, 2],
+        ["Done", user_id, 3],
       ];
 
       // Insert default categories
@@ -26,19 +26,30 @@ export const getCategories = async (user_id) => {
     return { success: true, data: categories };
   } catch (error) {
     console.log(error);
-
-    throw new Error(error.message);
+    throw error;
   }
 };
 
-export const addCategory = async (name) => {
+export const addCategory = async (name, user_id) => {
   try {
-    const query = "INSERT INTO categories (name) VALUES (?)";
+    const query = `INSERT INTO categories (name, user_id) VALUES (?, ?)`;
 
-    await pool.query(query, [name]);
+    await pool.query(query, [name, user_id]);
 
     return { success: true, message: "Category added successfully" };
   } catch (error) {
     throw new Error();
+  }
+};
+
+export const reOrderCategory = async (id, order) => {
+  try {
+    const query = "UPDATE categories SET `order` = ? WHERE id = ?";
+
+    await pool.query(query, [order, id]);
+
+    return { success: true, message: "Reoder Category was successfully" };
+  } catch (error) {
+    return { success: false, message: "Failed to reorder category" };
   }
 };

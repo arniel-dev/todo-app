@@ -1,20 +1,21 @@
 import { useForm } from "react-hook-form";
-import { createTicket } from "../services/ticketService";
 import useTicketStore from "../store/ticketStore";
 import "../styles/addTicketForm.scss";
 import useAuth from "../hooks/useAuth";
+import { useAddTicket } from "../hooks/useAddTicket";
 function AddTicketForm() {
-  const { register, handleSubmit, reset } = useForm();
-  const { addTicket, categories } = useTicketStore();
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: {
+      category_id: 1,
+    },
+  });
+  const addTicket = useAddTicket();
+  const { categories } = useTicketStore();
   const { userInfo } = useAuth();
 
   const onSubmit = async (data) => {
     try {
-      const newTicket = await createTicket({
-        ...data,
-        user_id: userInfo.user_id,
-      });
-      addTicket(newTicket);
+      addTicket.mutate({ ...data, user_id: userInfo.user_id });
       reset();
     } catch (error) {
       console.error(error);

@@ -38,3 +38,22 @@ export const handleTicketUpdate = async (ticketId, ticket) => {
     throw new Error(error);
   }
 };
+export const updateTicket = async ({ id, ticket }) => {
+  try {
+    const response = await axios.put(`api/ticket/${id}`, ticket);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const updateCategoryOrder = async ({ categoryId, order }) => {
+  try {
+    const response = await axios.put(`api/categories/${categoryId}/order`, {
+      order,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
