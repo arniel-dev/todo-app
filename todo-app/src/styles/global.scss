@@ -18,20 +18,20 @@ h1 {
 
 // Define global variables
 :root {
-  --primary-color: #5ab2ff; // Blue-500
-  --secondary-color: #a0deff; // Purple-500
-  --bg-color: #ffffff; // White
-  --dark-bg-color: #1a1a1a; // Dark mode background
-  --text-color: #374151; // Gray-700
-  --dark-text-color: #d1d5db; // Gray-300 for dark mode
-  --link-color: #60a5fa; // Blue-400
+  --primary-color: #5ab2ff;
+  --secondary-color: #a0deff;
+  --bg-color: #ffffff;
+  --dark-bg-color: #1a1a1a;
+  --text-color: #374151;
+  --dark-text-color: #d1d5db;
+  --link-color: #60a5fa;
   --link-color-dark: color-mix(
     in srgb,
     var(--link-color),
     black 10%
   ); // Darkened color
-  --blue: #3b82f6; // Blue-500
-  --purple: #a855f7; // Purple-500
+  --blue: #3b82f6;
+  --purple: #a855f7;
   --black: #000000;
   --white: #ffffff;
   --gray: #efefef;

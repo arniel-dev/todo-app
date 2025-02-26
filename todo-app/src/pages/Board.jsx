@@ -10,6 +10,7 @@ import { useUpdateCategoryOrder } from "../hooks/useUpdateCategoryOrder";
 import { debounce } from "lodash";
 import Drawer from "../components/Drawer";
 import Header from "../components/Header";
+import Background from "../components/Background";
 
 function Board() {
   const { categories, tickets } = useTicketStore();
@@ -152,105 +153,116 @@ function Board() {
   };
 
   return (
-    <div className="todo-container">
-      <Header />
-      <button onClick={openDrawer} className="add-ticket-button">
-        Add Ticket
-      </button>
-      <Drawer isOpen={isDrawerOpen} onClose={closeDrawer}>
-        <AddTicketForm onClose={closeDrawer} />
-      </Drawer>
-      <div className="board">
-        {categories
-          .sort((a, b) => a.order - b.order)
-          .map((category) => (
-            <div
-              key={category.id}
-              className={`category-column ${
-                dragOverCategoryId === category.id ? "drag-over" : ""
-              }`}
-              draggable
-              onDragStart={(e) => handleCategoryDragStart(e, category.id)}
-              onDragOver={handleCategoryDragOver}
-              onDrop={(e) => handleCategoryDrop(e, category.id)}
-            >
-              <h2>{category.name}</h2>
+    <>
+      <Background />
+      <div className="todo-container">
+        <Header />
+        <button onClick={openDrawer} className="add-ticket-button">
+          Add Ticket
+        </button>
+        <Drawer isOpen={isDrawerOpen} onClose={closeDrawer}>
+          <AddTicketForm onClose={closeDrawer} />
+        </Drawer>
+        <div className="board">
+          {categories
+            .sort((a, b) => a.order - b.order)
+            .map((category) => (
               <div
-                className="ticket-container"
-                onDragOver={(e) => handleTicketDragOver(e, category.id)}
-                onDrop={(e) => handleTicketDrop(e, category.id)}
+                key={category.id}
+                className={`category-column ${
+                  dragOverCategoryId === category.id ? "drag-over" : ""
+                }`}
+                draggable
+                onDragStart={(e) => handleCategoryDragStart(e, category.id)}
+                onDragOver={handleCategoryDragOver}
+                onDrop={(e) => handleCategoryDrop(e, category.id)}
               >
-                <div className="tickets-list">
-                  {tickets
-                    .filter((ticket) => ticket.category_id === category.id)
-                    .sort((a, b) =>
-                      priorityMap[a.priority] > priorityMap[b.priority] ? -1 : 1
-                    )
-                    .map((ticket) => (
-                      <div
-                        key={ticket.id}
-                        className={`ticket-card ${
-                          draggingTicketId === ticket.id ? "dragging" : ""
-                        }`}
-                        draggable
-                        onDragStart={(e) => handleTicketDragStart(e, ticket.id)}
-                        onDragOver={handlePriorityDragOver}
-                        onDrop={(e) => handlePriorityDrop(e, ticket.id)}
-                      >
-                        <h3>{ticket.title}</h3>
-                        {editingTicketId === ticket.id ? (
-                          <textarea
-                            value={draftDescription}
-                            onChange={(e) =>
-                              setDraftDescription(e.target.value)
-                            }
-                            onBlur={() => {
-                              setEditingTicketId(null);
-                              handleUpdateTicket(ticket.id, {
-                                description: draftDescription,
-                              });
-                            }}
-                            autoFocus
-                            className="description-input"
-                          />
-                        ) : (
-                          <p
-                            onClick={() =>
-                              handleDescriptionEdit(
-                                ticket.id,
-                                ticket.description
-                              )
-                            }
-                          >
-                            {ticket.description || "Add a description..."}
-                          </p>
-                        )}
-                        <div className="ticket-meta">
-                          <span>
-                            Due: {new Date(ticket.expiry_date).toLocaleString()}
-                          </span>
-                          <span>
-                            Priority:
-                            <select
-                              value={ticket.priority}
+                <h2>{category.name}</h2>
+                <div
+                  className="ticket-container"
+                  onDragOver={(e) => handleTicketDragOver(e, category.id)}
+                  onDrop={(e) => handleTicketDrop(e, category.id)}
+                >
+                  <div className="tickets-list">
+                    {tickets
+                      .filter((ticket) => ticket.category_id === category.id)
+                      .sort((a, b) =>
+                        priorityMap[a.priority] > priorityMap[b.priority]
+                          ? -1
+                          : 1
+                      )
+                      .map((ticket) => (
+                        <div
+                          key={ticket.id}
+                          className={`ticket-card ${
+                            draggingTicketId === ticket.id ? "dragging" : ""
+                          }`}
+                          draggable
+                          onDragStart={(e) =>
+                            handleTicketDragStart(e, ticket.id)
+                          }
+                          onDragOver={handlePriorityDragOver}
+                          onDrop={(e) => handlePriorityDrop(e, ticket.id)}
+                        >
+                          <h3>{ticket.title}</h3>
+                          {editingTicketId === ticket.id ? (
+                            <textarea
+                              value={draftDescription}
                               onChange={(e) =>
-                                handlePriorityChange(ticket.id, e.target.value)
+                                setDraftDescription(e.target.value)
+                              }
+                              onBlur={() => {
+                                setEditingTicketId(null);
+                                handleUpdateTicket(ticket.id, {
+                                  description: draftDescription,
+                                });
+                              }}
+                              autoFocus
+                              className="description-input"
+                            />
+                          ) : (
+                            <p
+                              onClick={() =>
+                                handleDescriptionEdit(
+                                  ticket.id,
+                                  ticket.description
+                                )
                               }
                             >
-                              <option value="Low">Low</option>
-                              <option value="Medium">Medium</option>
-                              <option value="High">High</option>
-                            </select>
-                          </span>
+                              {ticket.description || "Add a description..."}
+                            </p>
+                          )}
+                          <div className="ticket-meta">
+                            <span>
+                              Due:{" "}
+                              {new Date(ticket.expiry_date).toLocaleString()}
+                            </span>
+                            <span>
+                              Priority:
+                              <select
+                                value={ticket.priority}
+                                onChange={(e) =>
+                                  handlePriorityChange(
+                                    ticket.id,
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                              </select>
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

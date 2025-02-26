@@ -1,11 +1,8 @@
-import { auth } from "../firebaseConfig"; // Import Firebase auth
-import "../styles/header.scss"; // Import styles for the header
+import "../styles/header.scss";
 import useAuth from "../hooks/useAuth";
 
 function Header() {
-  const { userInfo, logout } = useAuth(); // State to store the user
-
-  // Fetch the authenticated user
+  const { userInfo, logout } = useAuth();
 
   return (
     <div className="header-bar">
