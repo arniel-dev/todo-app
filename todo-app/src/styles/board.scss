@@ -1,8 +1,7 @@
-
-.todo-container{
-  max-width: 1200px;
+.todo-container {
+  // max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 5px 20px;
 }
 .board {
   display: flex;
@@ -16,7 +15,7 @@
   background-color: #ebecf0;
   border-radius: 4px;
   padding: 10px;
-  min-width: 300px;
+  min-width: 350px;
   max-width: 300px;
   height: fit-content;
   transition: background-color 0.2s;
@@ -35,8 +34,11 @@
     color: #172b4d;
   }
 }
+.ticket-container {
+  height: 100%;
+  min-height: 70vh;
+}
 
-  
 // Tickets list styles
 .tickets-list {
   display: flex;
@@ -77,9 +79,13 @@
   .ticket-meta {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 12px;
     color: #5e6c84;
-
+    height: 30px;
+    .priority {
+      text-align: right;
+    }
     select {
       margin-left: 5px;
       padding: 2px;
@@ -96,51 +102,87 @@
     }
   }
 }
-  // src/styles/board.scss
+// src/styles/board.scss
 .ticket-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-  
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(9, 30, 66, 0.25);
-    }
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(9, 30, 66, 0.25);
   }
-  
-  // src/styles/board.scss
+}
+
+// src/styles/board.scss
 .board {
-    overflow-x: auto;
-    padding-bottom: 20px; // Add space for scrollbar
+  overflow-x: auto;
+  padding-bottom: 20px; // Add space for scrollbar
+}
+.category-column {
+  &.dragging {
+    opacity: 0.5;
   }
-  .category-column {
-    &.dragging {
-      opacity: 0.5;
-    }
+}
+
+.ticket-card {
+  &.dragging {
+    opacity: 0.5;
   }
-  
-  .ticket-card {
-    &.dragging {
-      opacity: 0.5;
-    }
+}
+.description-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 80px;
+
+  &:focus {
+    outline: none;
+    border-color: #0079bf;
   }
-  .description-input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #dfe1e6;
-    border-radius: 4px;
-    font-size: 14px;
-    resize: vertical;
-    min-height: 80px;
-  
-    &:focus {
-      outline: none;
-      border-color: #0079bf;
-    }
+}
+
+.ticket-card p {
+  cursor: pointer;
+  &:hover {
+    background-color: #f4f5f7;
   }
-  
-  .ticket-card p {
-    cursor: pointer;
-    &:hover {
-      background-color: #f4f5f7;
-    }
+}
+
+.add-ticket-button {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+
+  &:hover {
+    background-color: var(--blue);
   }
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 400px;
+  background-color: #fff;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+
+  &.open {
+    transform: translateX(0);
+  }
+}
+
+.drawer-content {
+  padding: 20px;
+}
