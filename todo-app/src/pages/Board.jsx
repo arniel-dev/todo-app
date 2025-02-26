@@ -2,10 +2,11 @@ import "../styles/board.scss";
 import useGetCategories from "../hooks/useGetCategories";
 import useGetTickets from "../hooks/useGetTickets";
 import AddTicketForm from "../components/AddTicketForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useTicketStore from "../store/ticketStore";
 import { useUpdateTicket } from "../hooks/useUpdateTicket";
 import { useUpdateCategoryOrder } from "../hooks/useUpdateCategoryOrder";
+import { debounce } from "lodash"; // For debouncing auto-save
 
 function Board() {
   const { categories, tickets } = useTicketStore();
@@ -16,11 +17,14 @@ function Board() {
   const [draggingTicketId, setDraggingTicketId] = useState(null);
   const [dragOverCategoryId, setDragOverCategoryId] = useState(null);
   const [draggingCategoryId, setDraggingCategoryId] = useState(null);
+  const [editingTicketId, setEditingTicketId] = useState(null); // Track which ticket is being edited
+  const [draftDescription, setDraftDescription] = useState(""); // Store the draft description
   const priorityMap = {
     Low: 1,
     Medium: 2,
     High: 3,
   };
+
   // Handle category drag-and-drop
   const handleCategoryDragStart = (e, categoryId) => {
     setDraggingCategoryId(categoryId);
@@ -111,6 +115,23 @@ function Board() {
     handleUpdateTicket(ticketId, { priority: newPriority });
   };
 
+  // Handle description edit
+  const handleDescriptionEdit = (ticketId, description) => {
+    setEditingTicketId(ticketId); // Set the ticket being edited
+    setDraftDescription(description); // Set the draft description
+  };
+
+  // Auto-save draft description
+  const autoSaveDescription = debounce((ticketId, description) => {
+    handleUpdateTicket(ticketId, { description });
+  }, 1000); // Debounce for 1 second
+
+  useEffect(() => {
+    if (editingTicketId && draftDescription !== "") {
+      autoSaveDescription(editingTicketId, draftDescription);
+    }
+  }, [draftDescription, editingTicketId]);
+
   // Update ticket in the backend and Zustand store
   const handleUpdateTicket = async (ticketId, update) => {
     const currentTicket = tickets.find((item) => item.id === ticketId);
@@ -129,7 +150,7 @@ function Board() {
   };
 
   return (
-    <div className="">
+    <div className="todo-container">
       <h1>To-Do Board</h1>
       <AddTicketForm />
       <div className="board">
@@ -148,7 +169,7 @@ function Board() {
             >
               <h2>{category.name}</h2>
               <div
-                style={{ height: "100%" }}
+                style={{ height: "100%", minHeight: "40vh" }}
                 onDragOver={(e) => handleTicketDragOver(e, category.id)}
                 onDrop={(e) => handleTicketDrop(e, category.id)}
               >
@@ -157,7 +178,7 @@ function Board() {
                     .filter((ticket) => ticket.category_id === category.id)
                     .sort((a, b) =>
                       priorityMap[a.priority] > priorityMap[b.priority] ? -1 : 1
-                    ) // Sort tickets by priority decending order
+                    ) // Sort tickets by priority descending order
                     .map((ticket) => (
                       <div
                         key={ticket.id}
@@ -170,7 +191,33 @@ function Board() {
                         onDrop={(e) => handlePriorityDrop(e, ticket.id)}
                       >
                         <h3>{ticket.title}</h3>
-                        <p>{ticket.description}</p>
+                        {editingTicketId === ticket.id ? (
+                          <textarea
+                            value={draftDescription}
+                            onChange={(e) =>
+                              setDraftDescription(e.target.value)
+                            }
+                            onBlur={() => {
+                              setEditingTicketId(null); // Stop editing on blur
+                              handleUpdateTicket(ticket.id, {
+                                description: draftDescription,
+                              });
+                            }}
+                            autoFocus
+                            className="description-input"
+                          />
+                        ) : (
+                          <p
+                            onClick={() =>
+                              handleDescriptionEdit(
+                                ticket.id,
+                                ticket.description
+                              )
+                            }
+                          >
+                            {ticket.description || "Add a description..."}
+                          </p>
+                        )}
                         <div className="ticket-meta">
                           <span>
                             Due: {new Date(ticket.expiry_date).toLocaleString()}
