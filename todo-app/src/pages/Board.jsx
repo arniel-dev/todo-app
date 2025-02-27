@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import "../styles/board.scss";
 import useGetCategories from "../hooks/useGetCategories";
 import useGetTickets from "../hooks/useGetTickets";
@@ -11,6 +10,7 @@ import { debounce } from "lodash";
 import Drawer from "../components/Drawer";
 import Header from "../components/Header";
 import Background from "../components/Background";
+import Category from "../components/Category";
 
 function Board() {
   const { categories, tickets } = useTicketStore();
@@ -24,11 +24,7 @@ function Board() {
   const [editingTicketId, setEditingTicketId] = useState(null);
   const [draftDescription, setDraftDescription] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const priorityMap = {
-    Low: 1,
-    Medium: 2,
-    High: 3,
-  };
+
   const openDrawer = () => setIsDrawerOpen(true);
   const closeDrawer = () => setIsDrawerOpen(false);
 
@@ -167,98 +163,26 @@ function Board() {
           {categories
             .sort((a, b) => a.order - b.order)
             .map((category) => (
-              <div
+              <Category
                 key={category.id}
-                className={`category-column ${
-                  dragOverCategoryId === category.id ? "drag-over" : ""
-                }`}
-                draggable
-                onDragStart={(e) => handleCategoryDragStart(e, category.id)}
-                onDragOver={handleCategoryDragOver}
-                onDrop={(e) => handleCategoryDrop(e, category.id)}
-              >
-                <h2>{category.name}</h2>
-                <div
-                  className="ticket-container"
-                  onDragOver={(e) => handleTicketDragOver(e, category.id)}
-                  onDrop={(e) => handleTicketDrop(e, category.id)}
-                >
-                  <div className="tickets-list">
-                    {tickets
-                      .filter((ticket) => ticket.category_id === category.id)
-                      .sort((a, b) =>
-                        priorityMap[a.priority] > priorityMap[b.priority]
-                          ? -1
-                          : 1
-                      )
-                      .map((ticket) => (
-                        <div
-                          key={ticket.id}
-                          className={`ticket-card ${
-                            draggingTicketId === ticket.id ? "dragging" : ""
-                          }`}
-                          draggable
-                          onDragStart={(e) =>
-                            handleTicketDragStart(e, ticket.id)
-                          }
-                          onDragOver={handlePriorityDragOver}
-                          onDrop={(e) => handlePriorityDrop(e, ticket.id)}
-                        >
-                          <h3>{ticket.title}</h3>
-                          {editingTicketId === ticket.id ? (
-                            <textarea
-                              value={draftDescription}
-                              onChange={(e) =>
-                                setDraftDescription(e.target.value)
-                              }
-                              onBlur={() => {
-                                setEditingTicketId(null);
-                                handleUpdateTicket(ticket.id, {
-                                  description: draftDescription,
-                                });
-                              }}
-                              autoFocus
-                              className="description-input"
-                            />
-                          ) : (
-                            <p
-                              onClick={() =>
-                                handleDescriptionEdit(
-                                  ticket.id,
-                                  ticket.description
-                                )
-                              }
-                            >
-                              {ticket.description || "Add a description..."}
-                            </p>
-                          )}
-                          <div className="ticket-meta">
-                            <span>
-                              Due:{" "}
-                              {new Date(ticket.expiry_date).toLocaleString()}
-                            </span>
-                            <span>
-                              Priority:
-                              <select
-                                value={ticket.priority}
-                                onChange={(e) =>
-                                  handlePriorityChange(
-                                    ticket.id,
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                <option value="Low">Low</option>
-                                <option value="Medium">Medium</option>
-                                <option value="High">High</option>
-                              </select>
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
+                category={category}
+                tickets={tickets}
+                draggingTicketId={draggingTicketId}
+                dragOverCategoryId={dragOverCategoryId}
+                handleTicketDragStart={handleTicketDragStart}
+                handleTicketDragOver={handleTicketDragOver}
+                handleTicketDrop={handleTicketDrop}
+                handleCategoryDragStart={handleCategoryDragStart}
+                handleCategoryDragOver={handleCategoryDragOver}
+                handleCategoryDrop={handleCategoryDrop}
+                editingTicketId={editingTicketId}
+                draftDescription={draftDescription}
+                setDraftDescription={setDraftDescription}
+                handleDescriptionEdit={handleDescriptionEdit}
+                handlePriorityChange={handlePriorityChange}
+                handlePriorityDragOver={handlePriorityDragOver}
+                handlePriorityDrop={handlePriorityDrop}
+              />
             ))}
         </div>
       </div>

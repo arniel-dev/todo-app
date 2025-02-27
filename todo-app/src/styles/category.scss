@@ -1,0 +1,32 @@
+.category-column {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 10px;
+  min-width: 350px;
+  max-width: 300px;
+  height: fit-content;
+  transition: background-color 0.2s;
+
+  &.drag-over {
+    background-color: #d3e3fd; // Highlight when a task is dragged over
+  }
+
+  &.dragging {
+    opacity: 0.5; // Semi-transparent while dragging
+  }
+
+  h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    margin-left: 8px;
+    color: #172b4d;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+}
+.ticket-container {
+  height: 100%;
+  min-height: 70vh;
+}

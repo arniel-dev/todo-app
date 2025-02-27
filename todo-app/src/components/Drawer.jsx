@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import PropTypes from "prop-types";
-
+import "../styles/board.scss";
 function Drawer({ isOpen, onClose, children }) {
   // Close the drawer when clicking outside of it
   useEffect(() => {
