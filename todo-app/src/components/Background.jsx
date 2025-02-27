@@ -2,11 +2,7 @@ import React from "react";
 import "../styles/background.scss";
 
 const Background = () => {
-  return (
-    <div className="background">
-      <img alt="Background" className="background__image" />
-    </div>
-  );
+  return <div className="background"></div>;
 };
 
 export default Background;

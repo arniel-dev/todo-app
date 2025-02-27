@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import TicketList from "./TicketList";
-
+import "../styles/category.scss";
 const Category = ({
   category,
   tickets,
