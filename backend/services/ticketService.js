@@ -47,24 +47,13 @@ export const deleteTicket = async (id) => {
 };
 export const updateTicket = async (id, task) => {
   try {
-    const { title, description, expiry_date, priority, category_id } = task;
+    const { title, description, priority, category_id } = task;
 
     const updateQuery = `UPDATE tickets
-      SET title = ?, description = ?, expiry_date = ?, priority = ?, category_id = ?
+      SET title = ?, description = ?, priority = ?, category_id = ?
       WHERE id = ?`;
 
-    const formattedExpiryDate = new Date(expiry_date)
-      .toISOString()
-      .slice(0, 19)
-      .replace("T", " ");
-    const values = [
-      title,
-      description,
-      formattedExpiryDate,
-      priority,
-      category_id,
-      id,
-    ];
+    const values = [title, description, priority, category_id, id];
 
     await pool.query(updateQuery, values);
 

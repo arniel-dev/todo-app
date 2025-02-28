@@ -4,7 +4,6 @@ import TicketList from "./TicketList";
 import "../styles/category.scss";
 const Category = ({
   category,
-  tickets,
   draggingTicketId,
   dragOverCategoryId,
   handleTicketDragStart,
@@ -20,6 +19,7 @@ const Category = ({
   handlePriorityChange,
   handlePriorityDragOver,
   handlePriorityDrop,
+  handleUpdateTicket,
 }) => {
   return (
     <div
@@ -38,7 +38,6 @@ const Category = ({
         onDrop={(e) => handleTicketDrop(e, category.id)}
       >
         <TicketList
-          tickets={tickets}
           categoryId={category.id}
           draggingTicketId={draggingTicketId}
           handleTicketDragStart={handleTicketDragStart}
@@ -49,6 +48,7 @@ const Category = ({
           setDraftDescription={setDraftDescription}
           handleDescriptionEdit={handleDescriptionEdit}
           handlePriorityChange={handlePriorityChange}
+          handleUpdateTicket={handleUpdateTicket} // Pass this function
         />
       </div>
     </div>
@@ -61,17 +61,6 @@ Category.propTypes = {
     name: PropTypes.string.isRequired,
     order: PropTypes.number.isRequired,
   }).isRequired,
-  tickets: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string,
-      expiry_date: PropTypes.string.isRequired,
-      priority: PropTypes.string.isRequired,
-      category_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-        .isRequired,
-    })
-  ).isRequired,
   draggingTicketId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   dragOverCategoryId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   handleTicketDragStart: PropTypes.func.isRequired,
@@ -87,6 +76,7 @@ Category.propTypes = {
   handlePriorityChange: PropTypes.func.isRequired,
   handlePriorityDragOver: PropTypes.func.isRequired,
   handlePriorityDrop: PropTypes.func.isRequired,
+  handleUpdateTicket: PropTypes.func.isRequired,
 };
 
 export default Category;

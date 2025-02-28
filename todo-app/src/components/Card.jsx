@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import "../styles/card.scss";
+import { useDeleteTicket } from "../hooks/useDeleteTicket";
 
 const Card = ({
   ticket,
@@ -10,10 +11,33 @@ const Card = ({
   onDrop,
   editingTicketId,
   draftDescription,
-  setDraftDescription,
   handleDescriptionEdit,
   handlePriorityChange,
+  handleUpdateTicket,
 }) => {
+  const deleteMutation = useDeleteTicket();
+  const [localDraftDescription, setLocalDraftDescription] =
+    useState(draftDescription);
+
+  // Sync localDraftDescription with draftDescription when editingTicketId changes
+  useEffect(() => {
+    if (editingTicketId === ticket.id) {
+      setLocalDraftDescription(draftDescription);
+    }
+  }, [editingTicketId, draftDescription, ticket.id]);
+
+  // Handle description change locally
+  const handleDescriptionChange = (e) => {
+    setLocalDraftDescription(e.target.value);
+  };
+
+  const handleDescriptionBlur = () => {
+    if (localDraftDescription !== ticket.description) {
+      handleUpdateTicket(ticket.id, { description: localDraftDescription });
+    }
+    handleDescriptionEdit(null, ""); // Exit edit mode
+  };
+
   return (
     <div
       className={`ticket-card ${isDragging ? "dragging" : ""}`}
@@ -22,14 +46,21 @@ const Card = ({
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      <h3>{ticket.title}</h3>
+      <div className="card-header">
+        <h3>{ticket.title}</h3>
+        <button
+          onClick={() => deleteMutation.mutate(ticket.id)}
+          className="delete-button"
+        >
+          <span className="delete-icon">&times;</span>
+        </button>
+      </div>
+
       {editingTicketId === ticket.id ? (
         <textarea
-          value={draftDescription}
-          onChange={(e) => setDraftDescription(e.target.value)}
-          onBlur={() => {
-            handleDescriptionEdit(ticket.id, draftDescription);
-          }}
+          value={localDraftDescription}
+          onChange={handleDescriptionChange}
+          onBlur={handleDescriptionBlur} // Triggered when clicking outside
           autoFocus
           className="description-input"
         />
@@ -72,9 +103,10 @@ Card.propTypes = {
   onDrop: PropTypes.func.isRequired,
   editingTicketId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   draftDescription: PropTypes.string,
-  setDraftDescription: PropTypes.func.isRequired,
+  handleUpdateTicket: PropTypes.func.isRequired,
   handleDescriptionEdit: PropTypes.func.isRequired,
   handlePriorityChange: PropTypes.func.isRequired,
+  deleteticket: PropTypes.func.isRequired,
 };
 
 export default Card;

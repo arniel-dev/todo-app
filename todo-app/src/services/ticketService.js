@@ -57,3 +57,12 @@ export const updateCategoryOrder = async ({ categoryId, order }) => {
     throw new Error(error);
   }
 };
+
+export const deleteTicket = async (id) => {
+  try {
+    const response = await axios.delete(`api/ticket/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

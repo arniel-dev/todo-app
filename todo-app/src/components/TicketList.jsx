@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Card from "./Card";
 import "../styles/ticketList.scss";
+import useTicketStore from "../store/ticketStore";
 
 const priorityMap = {
   Low: 1,
@@ -10,7 +11,6 @@ const priorityMap = {
 };
 
 const TicketList = ({
-  tickets,
   categoryId,
   draggingTicketId,
   handleTicketDragStart,
@@ -21,7 +21,9 @@ const TicketList = ({
   setDraftDescription,
   handleDescriptionEdit,
   handlePriorityChange,
+  handleUpdateTicket,
 }) => {
+  const { tickets } = useTicketStore();
   return (
     <div className="tickets-list">
       {tickets
@@ -42,6 +44,7 @@ const TicketList = ({
             setDraftDescription={setDraftDescription}
             handleDescriptionEdit={handleDescriptionEdit}
             handlePriorityChange={handlePriorityChange}
+            handleUpdateTicket={handleUpdateTicket} // Pass this function
           />
         ))}
     </div>
@@ -71,6 +74,7 @@ TicketList.propTypes = {
   setDraftDescription: PropTypes.func.isRequired,
   handleDescriptionEdit: PropTypes.func.isRequired,
   handlePriorityChange: PropTypes.func.isRequired,
+  handleUpdateTicket: PropTypes.func.isRequired,
 };
 
 export default TicketList;

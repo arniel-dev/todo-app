@@ -2,11 +2,10 @@ import "../styles/board.scss";
 import useGetCategories from "../hooks/useGetCategories";
 import useGetTickets from "../hooks/useGetTickets";
 import AddTicketForm from "../components/AddTicketForm";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useTicketStore from "../store/ticketStore";
 import { useUpdateTicket } from "../hooks/useUpdateTicket";
 import { useUpdateCategoryOrder } from "../hooks/useUpdateCategoryOrder";
-import { debounce } from "lodash";
 import Drawer from "../components/Drawer";
 import Header from "../components/Header";
 import Background from "../components/Background";
@@ -111,6 +110,7 @@ function Board() {
     });
 
     setDraggingTicketId(null);
+    setDragOverCategoryId(null);
   };
 
   const handlePriorityChange = (ticketId, newPriority) => {
@@ -122,16 +122,6 @@ function Board() {
     setDraftDescription(description);
   };
 
-  const autoSaveDescription = debounce((ticketId, description) => {
-    handleUpdateTicket(ticketId, { description });
-  }, 1000);
-
-  useEffect(() => {
-    if (editingTicketId && draftDescription !== "") {
-      autoSaveDescription(editingTicketId, draftDescription);
-    }
-  }, [draftDescription, editingTicketId]);
-
   const handleUpdateTicket = async (ticketId, update) => {
     const currentTicket = tickets.find((item) => item.id === ticketId);
     const updated = { ...currentTicket, ...update };
@@ -142,6 +132,7 @@ function Board() {
   };
 
   const handleUpdateTicketPriority = async (ticketId, updatedTicket) => {
+    console.log(updatedTicket);
     updateTicket.mutate({
       id: ticketId,
       ticket: updatedTicket,
@@ -166,7 +157,6 @@ function Board() {
               <Category
                 key={category.id}
                 category={category}
-                tickets={tickets}
                 draggingTicketId={draggingTicketId}
                 dragOverCategoryId={dragOverCategoryId}
                 handleTicketDragStart={handleTicketDragStart}
@@ -182,6 +172,7 @@ function Board() {
                 handlePriorityChange={handlePriorityChange}
                 handlePriorityDragOver={handlePriorityDragOver}
                 handlePriorityDrop={handlePriorityDrop}
+                handleUpdateTicket={handleUpdateTicket}
               />
             ))}
         </div>
