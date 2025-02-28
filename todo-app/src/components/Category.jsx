@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import TicketList from "./TicketList";
 import "../styles/category.scss";
+
 const Category = ({
   category,
   draggingTicketId,
@@ -22,36 +23,38 @@ const Category = ({
   handleUpdateTicket,
 }) => {
   return (
-    <div
-      className={`category-column ${
-        dragOverCategoryId === category.id ? "drag-over" : ""
-      }`}
-      draggable
-      onDragStart={(e) => handleCategoryDragStart(e, category.id)}
-      onDragOver={handleCategoryDragOver}
-      onDrop={(e) => handleCategoryDrop(e, category.id)}
-    >
-      <h2>{category.name}</h2>
+    <>
       <div
-        className="ticket-container"
-        onDragOver={(e) => handleTicketDragOver(e, category.id)}
-        onDrop={(e) => handleTicketDrop(e, category.id)}
+        className={`category-column ${
+          dragOverCategoryId === category.id ? "drag-over" : ""
+        }`}
+        draggable
+        onDragStart={(e) => handleCategoryDragStart(e, category.id)}
+        onDragOver={handleCategoryDragOver}
+        onDrop={(e) => handleCategoryDrop(e, category.id)}
       >
-        <TicketList
-          categoryId={category.id}
-          draggingTicketId={draggingTicketId}
-          handleTicketDragStart={handleTicketDragStart}
-          handlePriorityDragOver={handlePriorityDragOver}
-          handlePriorityDrop={handlePriorityDrop}
-          editingTicketId={editingTicketId}
-          draftDescription={draftDescription}
-          setDraftDescription={setDraftDescription}
-          handleDescriptionEdit={handleDescriptionEdit}
-          handlePriorityChange={handlePriorityChange}
-          handleUpdateTicket={handleUpdateTicket} // Pass this function
-        />
+        <h2>{category.name}</h2>
+        <div
+          className="ticket-container"
+          onDragOver={(e) => handleTicketDragOver(e, category.id)}
+          onDrop={(e) => handleTicketDrop(e, category.id)}
+        >
+          <TicketList
+            categoryId={category.id}
+            draggingTicketId={draggingTicketId}
+            handleTicketDragStart={handleTicketDragStart}
+            handlePriorityDragOver={handlePriorityDragOver}
+            handlePriorityDrop={handlePriorityDrop}
+            editingTicketId={editingTicketId}
+            draftDescription={draftDescription}
+            setDraftDescription={setDraftDescription}
+            handleDescriptionEdit={handleDescriptionEdit}
+            handlePriorityChange={handlePriorityChange}
+            handleUpdateTicket={handleUpdateTicket} // Pass this function
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

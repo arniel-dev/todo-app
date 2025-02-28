@@ -1,0 +1,86 @@
+.category-management {
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    input {
+      flex-grow: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+
+  .category-list {
+    list-style: none;
+    padding: 0;
+
+    .category-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+
+      span {
+        flex-grow: 1;
+      }
+
+      .inline-edit-container {
+        display: flex;
+        gap: 10px;
+        flex-grow: 1;
+
+        input {
+          flex-grow: 1;
+          padding: 5px;
+          border: 1px solid #ddd;
+          border-radius: 3px;
+        }
+      }
+
+      .icon-button {
+        margin-left: 10px;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        background-color: transparent;
+
+        &:hover {
+          opacity: 0.8;
+        }
+
+        .icon {
+          margin-right: 5px;
+        }
+
+        .button-label {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

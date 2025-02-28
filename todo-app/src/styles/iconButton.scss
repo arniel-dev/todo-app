@@ -1,0 +1,40 @@
+.icon-button {
+  border: none;
+  color: var(--white);
+  padding: 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  white-space: nowrap;
+
+  .icon {
+    font-size: 20px;
+    margin-right: 0;
+    transition: margin-right 0.3s ease;
+  }
+
+  .button-label {
+    opacity: 0;
+    margin-left: 0;
+    transition: opacity 0.3s ease, margin-left 0.3s ease;
+  }
+
+  &.has-label:hover {
+    width: auto;
+    padding: 15px 20px;
+
+    .button-label {
+      opacity: 1;
+      margin-left: 10px;
+    }
+  }
+}

@@ -11,6 +11,10 @@ import Header from "../components/Header";
 import Background from "../components/Background";
 import Category from "../components/Category";
 
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import IconButton from "../components/IconButton";
+import CategoryManagement from "./CategoryManagement";
+
 function Board() {
   const { categories, tickets } = useTicketStore();
   useGetCategories();
@@ -22,10 +26,15 @@ function Board() {
   const [draggingCategoryId, setDraggingCategoryId] = useState(null);
   const [editingTicketId, setEditingTicketId] = useState(null);
   const [draftDescription, setDraftDescription] = useState("");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAddTicketDrawerOpen, setIsAddTicketDrawerOpen] = useState(false);
+  const [isAddCategoryDrawerOpen, setIsAddCategoryDrawerOpen] = useState(false);
 
-  const openDrawer = () => setIsDrawerOpen(true);
-  const closeDrawer = () => setIsDrawerOpen(false);
+  const openAddTicket = () => setIsAddTicketDrawerOpen(true);
+  const openAddCategory = () => setIsAddCategoryDrawerOpen(true);
+  const closeDrawer = () => {
+    setIsAddTicketDrawerOpen(false);
+    setIsAddCategoryDrawerOpen(false);
+  };
 
   // Handle category drag-and-drop
   const handleCategoryDragStart = (e, categoryId) => {
@@ -144,12 +153,16 @@ function Board() {
       <Background />
       <div className="todo-container">
         <Header />
-        <button onClick={openDrawer} className="add-ticket-button">
+        <button onClick={openAddTicket} className="add-ticket-button">
           Add Ticket
         </button>
-        <Drawer isOpen={isDrawerOpen} onClose={closeDrawer}>
+        <Drawer isOpen={isAddTicketDrawerOpen} onClose={closeDrawer}>
           <AddTicketForm onClose={closeDrawer} />
         </Drawer>
+        <Drawer isOpen={isAddCategoryDrawerOpen} onClose={closeDrawer}>
+          <CategoryManagement />
+        </Drawer>
+
         <div className="board">
           {categories
             .sort((a, b) => a.order - b.order)
@@ -175,6 +188,13 @@ function Board() {
                 handleUpdateTicket={handleUpdateTicket}
               />
             ))}
+          <IconButton
+            icon={faPlus} // FontAwesome icon
+            onClick={openAddCategory}
+            ariaLabel="Add Category"
+            label="Add Category" // Button label
+            backgroundColor="var(--primary-color)"
+          />
         </div>
       </div>
     </>

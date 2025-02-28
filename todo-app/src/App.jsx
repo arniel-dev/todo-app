@@ -6,7 +6,6 @@ import "./App.scss";
 import "./styles/global.scss";
 
 import Loader from "./components/Loader";
-import CategoryManagement from "./pages/CategoryManagement";
 
 // Lazy load pages
 const Login = lazy(() => import("./pages/Login"));
@@ -20,7 +19,6 @@ function App() {
 
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<Board />} />
-            <Route path="/manage-category" element={<CategoryManagement />} />
           </Route>
         </Routes>
       </Suspense>
