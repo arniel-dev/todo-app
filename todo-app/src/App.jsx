@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import "./App.scss";
 import "./styles/global.scss";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Loader from "./components/Loader";
 
 // Lazy load pages
@@ -14,6 +15,7 @@ function App() {
   return (
     <BrowserRouter>
       <Suspense fallback={<Loader />}>
+        <ToastContainer />
         <Routes>
           <Route path="/login" element={<Login />} />
 

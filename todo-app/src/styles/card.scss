@@ -6,14 +6,47 @@
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 4px solid transparent; // Default border
+  transition: all 0.3s ease; // Smooth transition for hover effects
+  &.expiring-soon {
+    border-left: 4px solid orange;
+    &:hover {
+      background-color: rgba(
+        255,
+        165,
+        0,
+        0.1
+      ); // Light orange background on hover
+    }
+  }
+  &.expired {
+    border-left: 4px solid red;
+    &:hover {
+      background-color: rgba(255, 0, 0, 0.1); // Light red background on hover
+    }
+  }
+
+  &.priority-high {
+    background-color: #ffcccc;
+  }
+
+  &.priority-medium {
+    background-color: #fff3cc;
+  }
+
+  &.priority-low {
+    background-color: #ccffcc;
+  }
 
   &.dragging {
-    opacity: 0.5; // Semi-transparent while dragging
+    opacity: 0.5;
   }
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(9, 30, 66, 0.25);
+    // transform: translateY(-2px);
+    // box-shadow: 0 4px 8px rgba(9, 30, 66, 0.25);
+    transform: scale(1.02); // Slightly enlarge the card on hover
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // Add a shadow on hover
   }
 
   p {
@@ -36,15 +69,26 @@
     select {
       margin-left: 5px;
       padding: 2px;
-      border: 1px solid #dfe1e6;
+      border: 1px solid #78787a;
       border-radius: 4px;
       font-size: 12px;
-      background-color: var(--white);
+      // background-color: var(--white);
       cursor: pointer;
 
       &:focus {
         outline: none;
         border-color: var(--blue);
+      }
+      &.priority-high {
+        background-color: #ffcccc;
+      }
+
+      &.priority-medium {
+        background-color: #fff3cc;
+      }
+
+      &.priority-low {
+        background-color: #ccffcc;
       }
     }
   }
@@ -120,4 +164,38 @@ h3 {
 
 .delete-icon {
   line-height: 1;
+}
+
+//Tool tip for expired and expiry effect
+.ticket-card {
+  position: relative;
+
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &.expired::after {
+    content: "This ticket has expired";
+  }
+
+  &.expiring-soon::after {
+    content: "This ticket is expiring soon";
+  }
 }

@@ -146,7 +146,6 @@ function Board() {
   };
 
   const handleUpdateTicketPriority = async (ticketId, updatedTicket) => {
-    console.log(updatedTicket);
     updateTicket.mutate({
       id: ticketId,
       ticket: updatedTicket,
