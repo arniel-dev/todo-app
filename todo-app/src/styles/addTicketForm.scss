@@ -1,9 +1,14 @@
-// Add ticket form styles
-.drawer-name {
-  margin: 8px 8px 8px 0;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 20px 0px;
+}
+h2 {
+  font-weight: 700;
+  font-size: larger;
 }
 .add-ticket-form {
-  // background-color: var(--color-lime-200);
   border-radius: 4px;
   padding: 10px;
   margin-bottom: 20px;

@@ -1,7 +1,8 @@
 import {
   getCategories,
   addCategory,
-  reOrderCategory,
+  updateCategoryDetails,
+  deleteCategory,
 } from "../services/categoryService.js";
 
 export const retrieveCategories = async (req, res) => {
@@ -24,11 +25,11 @@ export const retrieveCategories = async (req, res) => {
 
 export const createCategory = async (req, res) => {
   try {
-    const { name, user_id } = req.body;
+    const { name, user_id, order } = req.body;
     if (!name) {
       return res.status(400).json({ error: "Category name is required" });
     }
-    const response = await addCategory(name, user_id);
+    const response = await addCategory(name, user_id, order);
     if (response.success) {
       return res.status(200).json(response.data);
     } else {
@@ -42,15 +43,22 @@ export const createCategory = async (req, res) => {
   }
 };
 
-export const updateCategoriesOrder = async (req, res) => {
+export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { order } = req.body;
-    if (!id && !order) {
-      return res.status(400).json({ error: "order & id are required" });
+    const { order, name } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ error: "ID is required" });
     }
 
-    const response = await reOrderCategory(id, order);
+    if (!name && !order) {
+      return res
+        .status(400)
+        .json({ error: "At least one field (name or order) is required" });
+    }
+
+    const response = await updateCategoryDetails(id, name, order);
 
     if (response.success) {
       return res.status(200).json(response.data);
@@ -61,6 +69,24 @@ export const updateCategoriesOrder = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "ordering categories failed. Please try again later.",
+    });
+  }
+};
+
+export const removeCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await deleteCategory(id);
+    if (response.success) {
+      return res.status(200).json(response);
+    } else {
+      return res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error in deleting category:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Deleting category failed. Please try again later.",
     });
   }
 };

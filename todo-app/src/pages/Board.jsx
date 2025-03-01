@@ -5,22 +5,27 @@ import AddTicketForm from "../components/AddTicketForm";
 import { useState } from "react";
 import useTicketStore from "../store/ticketStore";
 import { useUpdateTicket } from "../hooks/useUpdateTicket";
-import { useUpdateCategoryOrder } from "../hooks/useUpdateCategoryOrder";
+import { useUpdateCategory } from "../hooks/useUpdateCategory";
 import Drawer from "../components/Drawer";
 import Header from "../components/Header";
 import Background from "../components/Background";
 import Category from "../components/Category";
 
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faCheckSquare,
+  faList,
+} from "@fortawesome/free-solid-svg-icons";
 import IconButton from "../components/IconButton";
-import CategoryManagement from "./CategoryManagement";
+import CategoryManagement from "../components/CategoryManagement";
+import FloatingMenuButton from "../components/FloatingMenuButton";
 
 function Board() {
   const { categories, tickets } = useTicketStore();
   useGetCategories();
   useGetTickets();
   const updateTicket = useUpdateTicket();
-  const updateCategoryOrder = useUpdateCategoryOrder();
+  const updateCategoryMutation = useUpdateCategory();
   const [draggingTicketId, setDraggingTicketId] = useState(null);
   const [dragOverCategoryId, setDragOverCategoryId] = useState(null);
   const [draggingCategoryId, setDraggingCategoryId] = useState(null);
@@ -58,11 +63,11 @@ function Board() {
     const targetCategory = categories.find((cat) => cat.id == targetCategoryId);
 
     // Swap their order values
-    updateCategoryOrder.mutate({
+    updateCategoryMutation.mutate({
       categoryId: draggingCategoryId,
       order: targetCategory.order,
     });
-    updateCategoryOrder.mutate({
+    updateCategoryMutation.mutate({
       categoryId: targetCategoryId,
       order: draggedCategory.order,
     });
@@ -147,20 +152,34 @@ function Board() {
       ticket: updatedTicket,
     });
   };
+  const menuItems = [
+    {
+      icon: faCheckSquare,
+      label: "Add Ticket",
+      onClick: openAddTicket,
+      bgColor: "var(--primary-color)",
+      ariaLabel: "Add Ticket",
+    },
+    {
+      icon: faList,
+      label: "Add Category",
+      onClick: openAddCategory,
+      bgColor: "var(--primary-color)",
+      ariaLabel: "Add Category",
+    },
+  ];
 
   return (
     <>
       <Background />
       <div className="todo-container">
         <Header />
-        <button onClick={openAddTicket} className="add-ticket-button">
-          Add Ticket
-        </button>
+        <FloatingMenuButton mainIcon={faPlus} items={menuItems} />
         <Drawer isOpen={isAddTicketDrawerOpen} onClose={closeDrawer}>
           <AddTicketForm onClose={closeDrawer} />
         </Drawer>
         <Drawer isOpen={isAddCategoryDrawerOpen} onClose={closeDrawer}>
-          <CategoryManagement />
+          <CategoryManagement onClose={closeDrawer} />
         </Drawer>
 
         <div className="board">
@@ -188,13 +207,6 @@ function Board() {
                 handleUpdateTicket={handleUpdateTicket}
               />
             ))}
-          <IconButton
-            icon={faPlus} // FontAwesome icon
-            onClick={openAddCategory}
-            ariaLabel="Add Category"
-            label="Add Category" // Button label
-            backgroundColor="var(--primary-color)"
-          />
         </div>
       </div>
     </>

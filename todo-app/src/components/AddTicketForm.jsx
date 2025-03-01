@@ -4,6 +4,8 @@ import "../styles/addTicketForm.scss";
 import useAuth from "../hooks/useAuth";
 import { useAddTicket } from "../hooks/useAddTicket";
 import PropTypes from "prop-types";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 function AddTicketForm({ onClose }) {
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -26,16 +28,10 @@ function AddTicketForm({ onClose }) {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h3 className="drawer-name">Create Ticket</h3>
+      <div className="header">
+        <h2>Create Ticket</h2>
         <button onClick={() => onClose()} className="close-button">
-          <span className="close-icon">&times;</span>
+          <FontAwesomeIcon icon={faTimes} className="close-icon" />
         </button>
       </div>
 

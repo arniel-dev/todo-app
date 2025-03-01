@@ -1,14 +1,31 @@
 import React, { useState } from "react";
-import { faEdit, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faSave,
+  faTimes,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import "../styles/categoryManagement.scss";
-import IconButton from "../components/IconButton";
+import PropTypes from "prop-types";
+import IconButton from "./IconButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useTicketStore from "../store/ticketStore";
+import { useUpdateCategory } from "../hooks/useUpdateCategory";
+import { useAddCategory } from "../hooks/useAddCategory";
+import useAuth from "../hooks/useAuth";
+import { useDeleteCategory } from "../hooks/useDeleteCategory";
 
 const CategoryManagement = ({ onClose }) => {
-  const [categories, setCategories] = useState([{ id: 1, name: "To Do" }]);
+  const { categories, setCategories } = useTicketStore();
+  const { userInfo } = useAuth();
   const [currentCategory, setCurrentCategory] = useState({
     id: null,
     name: "",
   });
+
+  const addCategory = useAddCategory();
+  const updateCategory = useUpdateCategory();
+  const deleteCategory = useDeleteCategory();
 
   const [editingCategoryId, setEditingCategoryId] = useState(null);
 
@@ -18,13 +35,13 @@ const CategoryManagement = ({ onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    const order = categories?.length + 1;
     const newCategory = {
       id: categories.length + 1,
       name: currentCategory.name,
+      order: order,
     };
-    setCategories([...categories, newCategory]);
-
+    addCategory.mutate({ category: newCategory, userId: userInfo.user_id });
     setCurrentCategory({ id: null, name: "" });
   };
 
@@ -40,17 +57,22 @@ const CategoryManagement = ({ onClose }) => {
   };
 
   const saveInlineEdit = (id) => {
+    const editedCategory = categories.find((item) => item.id === id);
+    updateCategory.mutate({
+      categoryId: id,
+      name: editedCategory.name,
+    });
     setEditingCategoryId(null);
-  };
-
-  const handleDelete = (id) => {
-    const filteredCategories = categories.filter((cat) => cat.id !== id);
-    setCategories(filteredCategories);
   };
 
   return (
     <div className="category-management">
-      <h2>Manage Category</h2>
+      <div className="header">
+        <h2>Manage Category</h2>
+        <button onClick={() => onClose()} className="close-button">
+          <FontAwesomeIcon icon={faTimes} className="close-icon" />
+        </button>
+      </div>
 
       <form onSubmit={handleSubmit}>
         <input
@@ -79,6 +101,7 @@ const CategoryManagement = ({ onClose }) => {
                   onClick={() => saveInlineEdit(category.id)}
                   ariaLabel="Save"
                   icon={faSave}
+                  backgroundColor="var(--primary-color)"
                 />
               </div>
             ) : (
@@ -95,7 +118,7 @@ const CategoryManagement = ({ onClose }) => {
               )}
 
               <IconButton
-                onClick={() => handleDelete(category.id)}
+                onClick={() => deleteCategory.mutate(category.id)}
                 ariaLabel="Delete"
                 icon={faTrash}
                 backgroundColor="#ff6347"
@@ -107,5 +130,7 @@ const CategoryManagement = ({ onClose }) => {
     </div>
   );
 };
-
+CategoryManagement.propTypes = {
+  onClose: PropTypes.func,
+};
 export default CategoryManagement;

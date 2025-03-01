@@ -4,9 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../styles/iconButton.scss";
 
 // Helper function to darken a color
-const darkenColor = (color, amount = 20) => {
+const darkenColor = (color, amount = 50) => {
   if (!color || typeof color !== "string" || !color.startsWith("#")) {
-    return "#333";
+    return "#3b82f6";
   }
 
   // Remove the '#' from the color if it exists
@@ -70,7 +70,7 @@ IconButton.defaultProps = {
   icon: null,
   customIcon: null,
   label: "",
-  backgroundColor: "#007bff", // Default background color (blue)
+  backgroundColor: "#007bff",
 };
 
 export default IconButton;
