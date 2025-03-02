@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import TextField from "./TextField";
 import Button from "./Button";
 import Link from "./Link";
+import { toast } from "react-toastify";
 
 const formSchema = yup.object().shape({
   fullname: yup.string().required("Full name is required"),
@@ -33,11 +34,25 @@ const SignUp = ({ toggle }) => {
   } = useForm({ resolver: yupResolver(formSchema) });
 
   const onSubmit = async (data) => {
+    const toastId = toast.loading("Registering...");
     try {
       await signUp(data.fullname, data.email, data.password);
-      navigate(0);
+      toast.update(toastId, {
+        render: "Registration successful! Welcome!",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      setTimeout(() => {
+        navigate(0);
+      }, [2000]);
     } catch (error) {
-      alert(error.message);
+      toast.update(toastId, {
+        render: `${error}`,
+        type: "error",
+        isLoading: false,
+        autoClose: 3000, // Close after 3 seconds
+      });
     }
   };
 

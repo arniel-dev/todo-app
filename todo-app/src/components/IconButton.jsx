@@ -33,6 +33,7 @@ const IconButton = ({
   customIcon,
   label,
   backgroundColor,
+  ...props
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -46,6 +47,7 @@ const IconButton = ({
       style={{ backgroundColor: isHovered ? hoverColor : backgroundColor }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      {...props}
     >
       {customIcon ? (
         <span className="icon">{customIcon}</span>

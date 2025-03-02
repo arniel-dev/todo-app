@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 function AddTicketForm({ onClose }) {
   const { control, handleSubmit, reset } = useForm({
@@ -39,6 +40,9 @@ function AddTicketForm({ onClose }) {
   const onSubmit = async (data) => {
     try {
       addTicket.mutate({ ...data, user_id: userInfo.user_id });
+      if (addTicket.isSuccess) {
+        toast.success(`Ticket "${data.title}" was successfully created"`);
+      }
       onClose();
       reset();
     } catch (error) {

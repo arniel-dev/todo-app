@@ -14,7 +14,7 @@ import { useUpdateCategory } from "../hooks/useUpdateCategory";
 import { useAddCategory } from "../hooks/useAddCategory";
 import useAuth from "../hooks/useAuth";
 import { useDeleteCategory } from "../hooks/useDeleteCategory";
-
+import { toast } from "react-toastify";
 const CategoryManagement = ({ onClose }) => {
   const { categories, setCategories } = useTicketStore();
   const { userInfo } = useAuth();
@@ -42,6 +42,9 @@ const CategoryManagement = ({ onClose }) => {
       order: order,
     };
     addCategory.mutate({ category: newCategory, userId: userInfo.user_id });
+    if (addCategory.isSuccess) {
+      toast.success(`category "${newCategory.name}" was successfully created"`);
+    }
     setCurrentCategory({ id: null, name: "" });
   };
 
@@ -96,6 +99,7 @@ const CategoryManagement = ({ onClose }) => {
                   onChange={(e) =>
                     handleInlineEditChange(category.id, e.target.value)
                   }
+                  autoFocus
                 />
                 <IconButton
                   onClick={() => saveInlineEdit(category.id)}
@@ -109,20 +113,22 @@ const CategoryManagement = ({ onClose }) => {
             )}
             <div>
               {!editingCategoryId && (
-                <IconButton
-                  onClick={() => enableInlineEdit(category.id)}
-                  ariaLabel="Edit"
-                  icon={faEdit}
-                  backgroundColor="#32cd32"
-                />
+                <>
+                  {" "}
+                  <IconButton
+                    onClick={() => enableInlineEdit(category.id)}
+                    ariaLabel="Edit"
+                    icon={faEdit}
+                    backgroundColor="#32cd32"
+                  />
+                  <IconButton
+                    onClick={() => deleteCategory.mutate(category.id)}
+                    ariaLabel="Delete"
+                    icon={faTrash}
+                    backgroundColor="#ff6347"
+                  />
+                </>
               )}
-
-              <IconButton
-                onClick={() => deleteCategory.mutate(category.id)}
-                ariaLabel="Delete"
-                icon={faTrash}
-                backgroundColor="#ff6347"
-              />
             </div>
           </li>
         ))}

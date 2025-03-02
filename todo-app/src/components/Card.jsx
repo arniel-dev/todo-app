@@ -21,21 +21,21 @@ const Card = ({
   const [localDraftDescription, setLocalDraftDescription] =
     useState(draftDescription);
 
-  const [hasNotified, setHasNotified] = useState(false); // Flag to track if a notification was sent
+  const [hasNotified, setHasNotified] = useState(false);
 
   useEffect(() => {
-    if (hasNotified) return; // Exit if a notification was already sent
+    if (hasNotified) return;
 
     if (isExpired(ticket.expiry_date)) {
       toast.error(`Ticket "${ticket.title}" has expired!`, {
-        toastId: `expired-${ticket.id}`, // Unique ID for this toast
+        toastId: `expired-${ticket.id}`,
       });
-      setHasNotified(true); // Mark as notified
+      setHasNotified(true);
     } else if (isExpiryApproaching(ticket.expiry_date)) {
       toast.warning(`Ticket "${ticket.title}" is expiring soon!`, {
-        toastId: `expiry-${ticket.id}`, // Unique ID for this toast
+        toastId: `expiry-${ticket.id}`,
       });
-      setHasNotified(true); // Mark as notified
+      setHasNotified(true);
     }
   }, [ticket.expiry_date, hasNotified]);
 

@@ -16,9 +16,10 @@ import {
   faCheckSquare,
   faList,
 } from "@fortawesome/free-solid-svg-icons";
-import IconButton from "../components/IconButton";
 import CategoryManagement from "../components/CategoryManagement";
 import FloatingMenuButton from "../components/FloatingMenuButton";
+import { toast } from "react-toastify";
+import { ticketToastMessage } from "../utils/ticketUpdateUtils";
 
 function Board() {
   const { categories, tickets } = useTicketStore();
@@ -93,6 +94,13 @@ function Board() {
     const currentTicket = tickets.find((item) => item.id === draggingTicketId);
     if (categoryId === currentTicket.category_id) return;
     handleUpdateTicket(draggingTicketId, { category_id: categoryId });
+    if (updateTicket.isSuccess) {
+      ticketToastMessage(
+        currentTicket,
+        { category_id: categoryId },
+        categories
+      );
+    }
     setDraggingTicketId(null);
     setDragOverCategoryId(null);
   };
@@ -112,17 +120,31 @@ function Board() {
       (ticket) => ticket.id == draggedTicketId
     );
     const targetTicket = tickets.find((ticket) => ticket.id == targetTicketId);
+
     if (draggedTicket.category_id !== targetTicket.category_id) return; // should not trigger call if not same category
+    if (draggedTicket.priority === targetTicket.priority) {
+      setDraggingTicketId(null);
+      setDragOverCategoryId(null);
+      return; // should not trigger call if same priority
+    }
+
     // Swap their priority values
-    handleUpdateTicketPriority(draggedTicketId, {
+    handleDragTicketPriority(draggedTicketId, {
       ...draggedTicket,
       priority: targetTicket.priority,
     });
-    handleUpdateTicketPriority(targetTicketId, {
+    handleDragTicketPriority(targetTicketId, {
       ...targetTicket,
       priority: draggedTicket.priority,
     });
-
+    if (updateTicket.isSuccess) {
+      toast.success(
+        `Ticket "${draggedTicket.title}" priority updated to "${targetTicket.priority}"`
+      );
+      toast.success(
+        `Ticket "${targetTicket.title}" priority updated to "${draggedTicket.priority}"`
+      );
+    }
     setDraggingTicketId(null);
     setDragOverCategoryId(null);
   };
@@ -138,14 +160,18 @@ function Board() {
 
   const handleUpdateTicket = async (ticketId, update) => {
     const currentTicket = tickets.find((item) => item.id === ticketId);
+
     const updated = { ...currentTicket, ...update };
     updateTicket.mutate({
       id: ticketId,
       ticket: updated,
     });
+    if (updateTicket.isSuccess) {
+      ticketToastMessage(currentTicket, update);
+    }
   };
 
-  const handleUpdateTicketPriority = async (ticketId, updatedTicket) => {
+  const handleDragTicketPriority = async (ticketId, updatedTicket) => {
     updateTicket.mutate({
       id: ticketId,
       ticket: updatedTicket,

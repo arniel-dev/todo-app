@@ -7,6 +7,7 @@ import TextField from "./TextField";
 import Button from "./Button";
 import Link from "./Link";
 import { signIn } from "../services/authService";
+import { toast } from "react-toastify";
 import useAuth from "../hooks/useAuth";
 
 const formSchema = yup.object().shape({
@@ -30,13 +31,30 @@ const SignIn = ({ toggle }) => {
   } = useForm({ resolver: yupResolver(formSchema) });
 
   const onSubmit = async (data) => {
+    const toastId = toast.loading("Loading...");
     try {
       const userCredential = await signIn(data.email, data.password);
-      login(userCredential);
-
-      navigate("/", { replace: true });
+      if (userCredential.user) {
+        login(userCredential);
+        toast.update(toastId, {
+          render: "Welcome back! You've successfully logged in.",
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
+        });
+        navigate("/", { replace: true });
+      } else {
+        toast.error(
+          `We are currently experiencing temporary issues with our login system, and you are unable to access your account at this time.`
+        );
+      }
     } catch (error) {
-      alert(error.message);
+      toast.update(toastId, {
+        render: `${error}`,
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
   };
 
