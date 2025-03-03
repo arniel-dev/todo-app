@@ -5,27 +5,42 @@ import AddTicketForm from "../components/AddTicketForm";
 import { useState } from "react";
 import useTicketStore from "../store/ticketStore";
 import { useUpdateTicket } from "../hooks/useUpdateTicket";
-import { useUpdateCategoryOrder } from "../hooks/useUpdateCategoryOrder";
+import { useUpdateCategory } from "../hooks/useUpdateCategory";
 import Drawer from "../components/Drawer";
 import Header from "../components/Header";
 import Background from "../components/Background";
 import Category from "../components/Category";
+
+import {
+  faPlus,
+  faCheckSquare,
+  faList,
+} from "@fortawesome/free-solid-svg-icons";
+import CategoryManagement from "../components/CategoryManagement";
+import FloatingMenuButton from "../components/FloatingMenuButton";
+import { toast } from "react-toastify";
+import { ticketToastMessage } from "../utils/ticketUpdateUtils";
 
 function Board() {
   const { categories, tickets } = useTicketStore();
   useGetCategories();
   useGetTickets();
   const updateTicket = useUpdateTicket();
-  const updateCategoryOrder = useUpdateCategoryOrder();
+  const updateCategoryMutation = useUpdateCategory();
   const [draggingTicketId, setDraggingTicketId] = useState(null);
   const [dragOverCategoryId, setDragOverCategoryId] = useState(null);
   const [draggingCategoryId, setDraggingCategoryId] = useState(null);
   const [editingTicketId, setEditingTicketId] = useState(null);
   const [draftDescription, setDraftDescription] = useState("");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAddTicketDrawerOpen, setIsAddTicketDrawerOpen] = useState(false);
+  const [isAddCategoryDrawerOpen, setIsAddCategoryDrawerOpen] = useState(false);
 
-  const openDrawer = () => setIsDrawerOpen(true);
-  const closeDrawer = () => setIsDrawerOpen(false);
+  const openAddTicket = () => setIsAddTicketDrawerOpen(true);
+  const openAddCategory = () => setIsAddCategoryDrawerOpen(true);
+  const closeDrawer = () => {
+    setIsAddTicketDrawerOpen(false);
+    setIsAddCategoryDrawerOpen(false);
+  };
 
   // Handle category drag-and-drop
   const handleCategoryDragStart = (e, categoryId) => {
@@ -49,11 +64,11 @@ function Board() {
     const targetCategory = categories.find((cat) => cat.id == targetCategoryId);
 
     // Swap their order values
-    updateCategoryOrder.mutate({
+    updateCategoryMutation.mutate({
       categoryId: draggingCategoryId,
       order: targetCategory.order,
     });
-    updateCategoryOrder.mutate({
+    updateCategoryMutation.mutate({
       categoryId: targetCategoryId,
       order: draggedCategory.order,
     });
@@ -79,6 +94,13 @@ function Board() {
     const currentTicket = tickets.find((item) => item.id === draggingTicketId);
     if (categoryId === currentTicket.category_id) return;
     handleUpdateTicket(draggingTicketId, { category_id: categoryId });
+    if (updateTicket.isSuccess) {
+      ticketToastMessage(
+        currentTicket,
+        { category_id: categoryId },
+        categories
+      );
+    }
     setDraggingTicketId(null);
     setDragOverCategoryId(null);
   };
@@ -98,17 +120,31 @@ function Board() {
       (ticket) => ticket.id == draggedTicketId
     );
     const targetTicket = tickets.find((ticket) => ticket.id == targetTicketId);
+
     if (draggedTicket.category_id !== targetTicket.category_id) return; // should not trigger call if not same category
+    if (draggedTicket.priority === targetTicket.priority) {
+      setDraggingTicketId(null);
+      setDragOverCategoryId(null);
+      return; // should not trigger call if same priority
+    }
+
     // Swap their priority values
-    handleUpdateTicketPriority(draggedTicketId, {
+    handleDragTicketPriority(draggedTicketId, {
       ...draggedTicket,
       priority: targetTicket.priority,
     });
-    handleUpdateTicketPriority(targetTicketId, {
+    handleDragTicketPriority(targetTicketId, {
       ...targetTicket,
       priority: draggedTicket.priority,
     });
-
+    if (updateTicket.isSuccess) {
+      toast.success(
+        `Ticket "${draggedTicket.title}" priority updated to "${targetTicket.priority}"`
+      );
+      toast.success(
+        `Ticket "${targetTicket.title}" priority updated to "${draggedTicket.priority}"`
+      );
+    }
     setDraggingTicketId(null);
     setDragOverCategoryId(null);
   };
@@ -124,32 +160,53 @@ function Board() {
 
   const handleUpdateTicket = async (ticketId, update) => {
     const currentTicket = tickets.find((item) => item.id === ticketId);
+
     const updated = { ...currentTicket, ...update };
     updateTicket.mutate({
       id: ticketId,
       ticket: updated,
     });
+    if (updateTicket.isSuccess) {
+      ticketToastMessage(currentTicket, update);
+    }
   };
 
-  const handleUpdateTicketPriority = async (ticketId, updatedTicket) => {
-    console.log(updatedTicket);
+  const handleDragTicketPriority = async (ticketId, updatedTicket) => {
     updateTicket.mutate({
       id: ticketId,
       ticket: updatedTicket,
     });
   };
+  const menuItems = [
+    {
+      icon: faCheckSquare,
+      label: "Add Ticket",
+      onClick: openAddTicket,
+      bgColor: "var(--primary-color)",
+      ariaLabel: "Add Ticket",
+    },
+    {
+      icon: faList,
+      label: "Add Category",
+      onClick: openAddCategory,
+      bgColor: "var(--primary-color)",
+      ariaLabel: "Add Category",
+    },
+  ];
 
   return (
     <>
       <Background />
       <div className="todo-container">
         <Header />
-        <button onClick={openDrawer} className="add-ticket-button">
-          Add Ticket
-        </button>
-        <Drawer isOpen={isDrawerOpen} onClose={closeDrawer}>
+        <FloatingMenuButton mainIcon={faPlus} items={menuItems} />
+        <Drawer isOpen={isAddTicketDrawerOpen} onClose={closeDrawer}>
           <AddTicketForm onClose={closeDrawer} />
         </Drawer>
+        <Drawer isOpen={isAddCategoryDrawerOpen} onClose={closeDrawer}>
+          <CategoryManagement onClose={closeDrawer} />
+        </Drawer>
+
         <div className="board">
           {categories
             .sort((a, b) => a.order - b.order)

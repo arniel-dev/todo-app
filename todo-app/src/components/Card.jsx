@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import "../styles/card.scss";
 import { useDeleteTicket } from "../hooks/useDeleteTicket";
+import { isExpiryApproaching, isExpired } from "../utils/dateUtils";
+import { toast } from "react-toastify";
 
 const Card = ({
   ticket,
@@ -18,6 +20,24 @@ const Card = ({
   const deleteMutation = useDeleteTicket();
   const [localDraftDescription, setLocalDraftDescription] =
     useState(draftDescription);
+
+  const [hasNotified, setHasNotified] = useState(false);
+
+  useEffect(() => {
+    if (hasNotified) return;
+
+    if (isExpired(ticket.expiry_date)) {
+      toast.error(`Ticket "${ticket.title}" has expired!`, {
+        toastId: `expired-${ticket.id}`,
+      });
+      setHasNotified(true);
+    } else if (isExpiryApproaching(ticket.expiry_date)) {
+      toast.warning(`Ticket "${ticket.title}" is expiring soon!`, {
+        toastId: `expiry-${ticket.id}`,
+      });
+      setHasNotified(true);
+    }
+  }, [ticket.expiry_date, hasNotified]);
 
   // Sync localDraftDescription with draftDescription when editingTicketId changes
   useEffect(() => {
@@ -40,7 +60,13 @@ const Card = ({
 
   return (
     <div
-      className={`ticket-card ${isDragging ? "dragging" : ""}`}
+      className={`ticket-card ${isDragging ? "dragging" : ""} ${
+        isExpired(ticket.expiry_date)
+          ? "expired"
+          : isExpiryApproaching(ticket.expiry_date)
+          ? "expiring-soon"
+          : ""
+      }  priority-${ticket.priority.toLowerCase()}`}
       draggable
       onDragStart={onDragStart}
       onDragOver={onDragOver}
@@ -76,10 +102,17 @@ const Card = ({
           <select
             value={ticket.priority}
             onChange={(e) => handlePriorityChange(ticket.id, e.target.value)}
+            className={`priority-${ticket.priority.toLowerCase()}`}
           >
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
+            <option style={{ backgroundColor: "#ccffcc" }} value="Low">
+              Low
+            </option>
+            <option style={{ backgroundColor: "#fff3cc" }} value="Medium">
+              Medium
+            </option>
+            <option style={{ backgroundColor: "#ffcccc" }} value="High">
+              High
+            </option>
           </select>
         </span>
       </div>

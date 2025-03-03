@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateCategoryOrder } from "../services/ticketService";
+import { updateCategory } from "../services/ticketService";
 
-export function useUpdateCategoryOrder() {
+export function useUpdateCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateCategoryOrder,
+    mutationFn: updateCategory,
     onSuccess: (updatedCategory) => {
       queryClient.setQueryData(
         ["category", updatedCategory.id],

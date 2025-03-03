@@ -4,9 +4,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import "./App.scss";
 import "./styles/global.scss";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Loader from "./components/Loader";
-import CategoryManagement from "./pages/CategoryManagement";
 
 // Lazy load pages
 const Login = lazy(() => import("./pages/Login"));
@@ -15,12 +15,12 @@ function App() {
   return (
     <BrowserRouter>
       <Suspense fallback={<Loader />}>
+        <ToastContainer />
         <Routes>
           <Route path="/login" element={<Login />} />
 
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<Board />} />
-            <Route path="/manage-category" element={<CategoryManagement />} />
           </Route>
         </Routes>
       </Suspense>

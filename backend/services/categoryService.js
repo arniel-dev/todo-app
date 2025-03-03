@@ -30,11 +30,12 @@ export const getCategories = async (user_id) => {
   }
 };
 
-export const addCategory = async (name, user_id) => {
+export const addCategory = async (name, user_id, order) => {
   try {
-    const query = `INSERT INTO categories (name, user_id) VALUES (?, ?)`;
+    const query =
+      "INSERT INTO categories (name, user_id, `order`) VALUES (?, ?, ?)";
 
-    await pool.query(query, [name, user_id]);
+    await pool.query(query, [name, user_id, order]);
 
     return { success: true, message: "Category added successfully" };
   } catch (error) {
@@ -42,14 +43,43 @@ export const addCategory = async (name, user_id) => {
   }
 };
 
-export const reOrderCategory = async (id, order) => {
+export const updateCategoryDetails = async (id, name, order) => {
   try {
-    const query = "UPDATE categories SET `order` = ? WHERE id = ?";
+    let columnsToUpdate = [];
+    let values = [];
 
-    await pool.query(query, [order, id]);
+    if (name) {
+      columnsToUpdate.push("name = ?");
+      values.push(name);
+    }
 
-    return { success: true, message: "Reoder Category was successfully" };
+    if (order) {
+      columnsToUpdate.push("`order` = ?");
+      values.push(order);
+    }
+
+    const query = `UPDATE categories SET ${columnsToUpdate.join(
+      ", "
+    )} WHERE id = ?`;
+
+    values.push(id);
+
+    await pool.query(query, values);
+
+    return { success: true, message: "Update Category was successfully" };
   } catch (error) {
-    return { success: false, message: "Failed to reorder category" };
+    return { success: false, message: "Failed to update category" };
+  }
+};
+
+export const deleteCategory = async (id) => {
+  try {
+    const query = `DELETE FROM categories WHERE id=?`;
+
+    await pool.query(query, [id]);
+
+    return { success: true, message: "Category deleted successfully" };
+  } catch (error) {
+    throw new Error();
   }
 };
