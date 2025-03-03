@@ -43,7 +43,7 @@ const CategoryManagement = ({ onClose }) => {
     };
     addCategory.mutate({ category: newCategory, userId: userInfo.user_id });
     if (addCategory.isSuccess) {
-      toast.success(`category "${newCategory.name}" was successfully created"`);
+      toast.success(`Category "${newCategory.name}" was successfully created"`);
     }
     setCurrentCategory({ id: null, name: "" });
   };
@@ -65,7 +65,19 @@ const CategoryManagement = ({ onClose }) => {
       categoryId: id,
       name: editedCategory.name,
     });
+    if (updateCategory.isSuccess) {
+      toast.success(
+        `Category "${editedCategory.name}" was successfully updated"`
+      );
+    }
     setEditingCategoryId(null);
+  };
+  const handleDelete = (id) => {
+    deleteCategory.mutate(id);
+    if (deleteCategory.isSuccess) {
+      const deletedCategory = categories.find((item) => item.id === id);
+      toast.success(`Category "${deletedCategory.name}" was deleted"`);
+    }
   };
 
   return (
@@ -122,7 +134,7 @@ const CategoryManagement = ({ onClose }) => {
                     backgroundColor="#32cd32"
                   />
                   <IconButton
-                    onClick={() => deleteCategory.mutate(category.id)}
+                    onClick={() => handleDelete(category.id)}
                     ariaLabel="Delete"
                     icon={faTrash}
                     backgroundColor="#ff6347"
