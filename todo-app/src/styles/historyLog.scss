@@ -1,0 +1,124 @@
+@import "../styles/variables";
+@import "../styles/mixins";
+
+.history-log {
+  padding: $spacing-large;
+  background-color: $background-color;
+  min-height: 100vh;
+
+  &__title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: $spacing-large;
+    color: $text-color;
+  }
+
+  &__filters {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-medium;
+    margin-bottom: $spacing-large;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+    }
+  }
+
+  &__filter,
+  &__search {
+    padding: $spacing-small;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+    }
+  }
+
+  &__search {
+    flex-grow: 1;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-medium;
+  }
+
+  &__card {
+    @include card-style;
+    padding: $spacing-medium;
+  }
+
+  &__card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-small;
+  }
+
+  &__timestamp {
+    font-size: 12px;
+    color: $text-color;
+  }
+
+  &__type {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+
+    &--board {
+      background-color: lighten($primary-color, 40%);
+      color: darken($primary-color, 20%);
+    }
+
+    &--ticket {
+      background-color: lighten($success-color, 40%);
+      color: darken($success-color, 20%);
+    }
+  }
+
+  &__details {
+    color: $text-color;
+
+    .history-log__action {
+      font-weight: bold;
+      margin-bottom: $spacing-small;
+    }
+
+    .history-log__json {
+      font-size: 12px;
+      background-color: $background-color;
+      padding: $spacing-small;
+      border-radius: $border-radius;
+      overflow-x: auto;
+    }
+  }
+
+  &__user {
+    font-size: 12px;
+    color: lighten($text-color, 20%);
+    margin-top: $spacing-small;
+  }
+
+  &__pagination {
+    @include flex-center;
+    margin-top: $spacing-large;
+  }
+
+  &__load-more {
+    padding: $spacing-small $spacing-medium;
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    border-radius: $border-radius;
+    cursor: pointer;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}

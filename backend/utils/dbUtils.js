@@ -26,7 +26,19 @@ const createUsersQuery = `CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   firebase_uid VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
+  display_name VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+`;
+
+const createHistoryQuery = `CREATE TABLE IF NOT EXISTS history (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  type ENUM('BOARD_UPDATE', 'TICKET_UPDATE') NOT NULL,
+  action VARCHAR(50) NOT NULL,
+  details JSON NOT NULL,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  user_id INT,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 `;
 
@@ -44,6 +56,7 @@ export const createAllTable = async () => {
     await createTable("users", createUsersQuery);
     await createTable("categories", createCategoriesQuery);
     await createTable("tickets", createTicketsTableQuery);
+    await createTable("history", createHistoryQuery);
 
     console.log(`all tables created successfully.`);
   } catch (error) {

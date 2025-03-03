@@ -22,6 +22,7 @@ export const signUp = async (fullname, email, password) => {
     await axios.post("/api/register", {
       firebase_uid: userCredential?.user?.uid,
       email,
+      name: fullname,
     });
 
     await updateProfile(userCredential.user, { displayName: fullname });

@@ -39,7 +39,14 @@ function AddTicketForm({ onClose }) {
 
   const onSubmit = async (data) => {
     try {
-      addTicket.mutate({ ...data, user_id: userInfo.user_id });
+      const category = categories?.find(
+        (cat) => cat.id === parseInt(data.category_id)
+      );
+      addTicket.mutate({
+        ...data,
+        user_id: userInfo.user_id,
+        category_name: category.name,
+      });
       if (addTicket.isSuccess) {
         toast.success(`Ticket "${data.title}" was successfully created"`);
       }

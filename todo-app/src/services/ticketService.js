@@ -79,3 +79,12 @@ export const deleteCategory = async (id) => {
     throw new Error(error);
   }
 };
+
+export const fetchHistories = async (userId) => {
+  try {
+    const response = await axios.get(`api/histories/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

@@ -126,7 +126,6 @@ const CategoryManagement = ({ onClose }) => {
             <div>
               {!editingCategoryId && (
                 <>
-                  {" "}
                   <IconButton
                     onClick={() => enableInlineEdit(category.id)}
                     ariaLabel="Edit"

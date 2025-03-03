@@ -7,6 +7,7 @@ import { createDatabase } from "./config/createDatabase.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import historyRoutes from "./routes/historyRoutes.js";
 const app = express();
 config();
 
@@ -24,6 +25,7 @@ app.use(json());
 app.use("/api", ticketRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", userRoutes);
+app.use("/api", historyRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {

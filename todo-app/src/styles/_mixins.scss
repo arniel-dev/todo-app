@@ -1,0 +1,16 @@
+@mixin card-style {
+  background-color: white;
+  border-radius: $border-radius;
+  box-shadow: $shadow-sm;
+  transition: box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
