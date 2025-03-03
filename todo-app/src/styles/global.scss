@@ -1,3 +1,4 @@
+@import "../styles/variables";
 * {
   margin: 0;
   padding: 0;
@@ -18,24 +19,21 @@ h1 {
 
 // Define global variables
 :root {
-  --primary-color: #5ab2ff;
-  --secondary-color: #a0deff;
-  --bg-color: #ffffff;
-  --dark-bg-color: #1a1a1a;
-  --text-color: #374151;
-  --dark-text-color: #d1d5db;
-  --link-color: #60a5fa;
-  --link-color-dark: color-mix(
-    in srgb,
-    var(--link-color),
-    black 10%
-  ); // Darkened color
-  --blue: #3b82f6;
-  --purple: #a855f7;
-  --black: #000000;
-  --white: #ffffff;
-  --gray: #efefef;
-  --gray-2: #757575;
+  --primary-color: $primary-color;
+  --secondary-color: $secondary-color;
+  --bg-color: $bg-color;
+  --dark-bg-color: $dark-bg-color;
+  --text-color: $text-color;
+  --dark-text-color: $dark-text-color;
+  --link-color: $link-color;
+  --link-color-dark:$link-color-dark
+
+  --blue: $blue;
+  --purple: $purple;
+  --black: $black;
+  --white: $white;
+  --gray: $gray;
+  --gray-2: $gray-2;
 
   --border-radius: 20px;
 }

@@ -7,8 +7,15 @@ import {
 } from "../services/ticketService.js";
 
 export const createTicket = async (req, res) => {
-  const { title, description, expiry_date, priority, category_id, user_id } =
-    req.body;
+  const {
+    title,
+    description,
+    expiry_date,
+    priority,
+    category_id,
+    user_id,
+    category_name,
+  } = req.body;
 
   // Validate required fields
   if (!title || !category_id || !user_id) {
@@ -25,6 +32,7 @@ export const createTicket = async (req, res) => {
     priority,
     category_id,
     user_id,
+    category_name,
   });
 
   try {

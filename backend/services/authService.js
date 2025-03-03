@@ -1,19 +1,24 @@
 import { pool } from "../config/db.js";
 
-export const createUser = async (firebase_uid, email) => {
+export const createUser = async (firebase_uid, email, name) => {
   try {
     const checkQuery =
       "SELECT * FROM users WHERE firebase_uid = ? OR email = ?";
 
-    const [existingUser] = await pool.query(checkQuery, [firebase_uid, email]);
+    const [existingUser] = await pool.query(checkQuery, [
+      firebase_uid,
+      email,
+      name,
+    ]);
 
     if (existingUser.length > 0) {
       return { success: false, message: "User already exists" };
     }
 
-    const insertQuery = "INSERT INTO users (firebase_uid, email) VALUES (?, ?)";
+    const insertQuery =
+      "INSERT INTO users (firebase_uid, email, display_name) VALUES (?, ?, ?)";
 
-    await pool.query(insertQuery, [firebase_uid, email]);
+    await pool.query(insertQuery, [firebase_uid, email, name]);
 
     return { success: true, message: "User created successfully" };
   } catch (error) {
