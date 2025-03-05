@@ -116,14 +116,18 @@ const HistoryLog = ({ onClose }) => {
 };
 
 function formatDetails(details) {
-  return {
-    ...details,
-    oldData: {
-      ...details.oldData,
-      created_at: new Date(details?.oldData?.created_at).toLocaleString(),
-      expiry_date: new Date(details?.oldData?.expiry_date).toLocaleString(),
-    },
-  };
+  if (details?.oldData) {
+    return {
+      ...details,
+      oldData: {
+        ...details.oldData,
+        created_at: new Date(details?.oldData?.created_at).toLocaleString(),
+        expiry_date: new Date(details?.oldData?.expiry_date).toLocaleString(),
+      },
+    };
+  } else {
+    return details;
+  }
 }
 HistoryLog.propTypes = {
   onClose: PropTypes.func,
