@@ -80,11 +80,20 @@ export const deleteCategory = async (id) => {
   }
 };
 
-export const fetchHistories = async (userId) => {
+export const fetchHistories = async (
+  userId,
+  page = 1,
+  searchQuery = "",
+  filter = "all"
+) => {
   try {
-    const response = await axios.get(`api/histories/${userId}`);
-    return response.data;
+    const response = await axios.get(`/api/histories/${userId}`, {
+      params: { page, limit: 10, searchQuery, filter },
+    });
+
+    return response;
   } catch (error) {
-    throw new Error(error);
+    console.error("Error fetching history:", error);
+    throw new Error("Failed to fetch history");
   }
 };

@@ -3,7 +3,20 @@ import { getHistory } from "../services/historyService.js";
 export const retrieveHistory = async (req, res) => {
   try {
     const { id } = req.params;
-    const response = await getHistory(id);
+    const {
+      page = 1,
+      limit = 10,
+      searchQuery = "",
+      filter = "all",
+    } = req.query;
+
+    const response = await getHistory(
+      id,
+      parseInt(page),
+      parseInt(limit),
+      searchQuery,
+      filter
+    );
     if (response.success) {
       return res.status(200).json(response.data);
     } else {

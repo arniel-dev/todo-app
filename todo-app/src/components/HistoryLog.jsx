@@ -1,90 +1,122 @@
-import React, { useState } from "react";
-import "../styles/historyLog.scss";
+import React, { useState, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import useGetHistories from "../hooks/useGetHistories";
+import { debounce } from "lodash";
+import "../styles/historyLog.scss";
+import PropTypes from "prop-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-const HistoryLog = () => {
+const HistoryLog = ({ onClose }) => {
   const { userInfo } = useAuth();
-  console.log(userInfo);
-  const { histories } = useGetHistories();
-  const [filter, setFilter] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    histories,
+    loadMoreHistories,
+    hasMore,
+    setSearchQuery,
+    applyFilters,
+    isFetchingNextPage,
+  } = useGetHistories(userInfo.user_id);
 
-  const filteredHistory = histories?.filter((entry) => {
-    const matchesFilter =
-      filter === "all" || entry.type.toLowerCase().includes(filter);
-    const matchesSearch = JSON.stringify(entry.details)
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    const delayedSearch = debounce(() => {
+      setSearchQuery(searchInput);
+      applyFilters();
+    }, 500);
+
+    delayedSearch();
+    return () => delayedSearch.cancel();
+  }, [searchInput]);
 
   return (
     <div className="history-log">
-      <h1 className="history-log__title">Activity logs</h1>
+      <div className="header">
+        <h2 className="history-log__title">Activity Logs</h2>
+        <button onClick={() => onClose()} className="close-button">
+          <FontAwesomeIcon icon={faTimes} className="close-icon" />
+        </button>
+      </div>
 
       <div className="history-log__filters">
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="history-log__filter"
-        >
-          <option value="all">All</option>
-          <option value="ticket">Ticket Updates</option>
-          <option value="board">Board Updates</option>
-        </select>
-
-        <input
-          type="text"
-          placeholder="Search history..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="history-log__search"
-        />
+        <div className="history-log__search-container">
+          <input
+            type="text"
+            placeholder="Search history..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="history-log__search"
+          />
+          {searchInput && (
+            <button
+              onClick={() => setSearchInput("")}
+              className="history-log__search-button"
+            >
+              ✖
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* History List */}
       <div className="history-log__list">
-        {filteredHistory.map((entry) => (
-          <div key={entry.id} className="history-log__card">
-            <div className="history-log__card-header">
-              <span className="history-log__timestamp">
-                {new Date(entry.timestamp).toLocaleString()}
-              </span>
-              <span
-                className={`history-log__type ${
-                  entry.type === "BOARD_UPDATE"
-                    ? "history-log__type--board"
-                    : "history-log__type--ticket"
-                }`}
-              >
-                {entry.type === "BOARD_UPDATE"
-                  ? "Board Update"
-                  : "Ticket Update"}
-              </span>
-            </div>
-
-            <div className="history-log__details">
-              <p className="history-log__action">{entry.action}</p>
-              <pre className="history-log__json">
-                {JSON.stringify(hanleDetails(entry.details), null, 2)}
-              </pre>
-            </div>
-
-            {entry.user_id && (
-              <div className="history-log__user">
-                Performed by: {entry.display_name || `User #${entry.user_id}`}
+        {histories.length > 0 ? (
+          histories.map((entry) => (
+            <div key={entry.id} className="history-log__card">
+              <div className="history-log__card-header">
+                <span className="history-log__timestamp">
+                  {new Date(entry.timestamp).toLocaleString()}
+                </span>
+                <span
+                  className={`history-log__type ${
+                    entry.type === "BOARD_UPDATE"
+                      ? "history-log__type--board"
+                      : "history-log__type--ticket"
+                  }`}
+                >
+                  {entry.type === "BOARD_UPDATE"
+                    ? "Board Update"
+                    : "Ticket Update"}
+                </span>
               </div>
-            )}
-          </div>
-        ))}
+
+              <div className="history-log__details">
+                <p className="history-log__action">{entry.action}</p>
+                <pre className="history-log__json">
+                  {JSON.stringify(formatDetails(entry.details), null, 2)}
+                </pre>
+              </div>
+
+              {entry.user_id && (
+                <div className="history-log__user">
+                  Performed by: {entry.display_name || `User #${entry.user_id}`}
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="history-log__empty">No matching history found.</div>
+        )}
       </div>
+
+      {hasMore && (
+        <button
+          onClick={loadMoreHistories}
+          className="history-log__load-more"
+          disabled={isFetchingNextPage}
+        >
+          {isFetchingNextPage ? "Loading..." : "Load More"}
+        </button>
+      )}
+      {!hasMore && histories.length > 0 && (
+        <div className="history-log__end">End of the list</div>
+      )}
     </div>
   );
 };
-function hanleDetails(details) {
-  console.log(details);
-  const formatDetails = {
+
+function formatDetails(details) {
+  return {
     ...details,
     oldData: {
       ...details.oldData,
@@ -92,6 +124,8 @@ function hanleDetails(details) {
       expiry_date: new Date(details?.oldData?.expiry_date).toLocaleString(),
     },
   };
-  return formatDetails;
 }
+HistoryLog.propTypes = {
+  onClose: PropTypes.func,
+};
 export default HistoryLog;

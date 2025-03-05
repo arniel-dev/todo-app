@@ -15,11 +15,13 @@ import {
   faPlus,
   faCheckSquare,
   faList,
+  faHistory,
 } from "@fortawesome/free-solid-svg-icons";
 import CategoryManagement from "../components/CategoryManagement";
 import FloatingMenuButton from "../components/FloatingMenuButton";
 import { toast } from "react-toastify";
 import { ticketToastMessage } from "../utils/ticketUpdateUtils";
+import HistoryLog from "../components/HistoryLog";
 
 function Board() {
   const { categories, tickets } = useTicketStore();
@@ -34,12 +36,15 @@ function Board() {
   const [draftDescription, setDraftDescription] = useState("");
   const [isAddTicketDrawerOpen, setIsAddTicketDrawerOpen] = useState(false);
   const [isAddCategoryDrawerOpen, setIsAddCategoryDrawerOpen] = useState(false);
+  const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false);
 
   const openAddTicket = () => setIsAddTicketDrawerOpen(true);
   const openAddCategory = () => setIsAddCategoryDrawerOpen(true);
+  const openHistory = () => setIsHistoryDrawerOpen(true);
   const closeDrawer = () => {
     setIsAddTicketDrawerOpen(false);
     setIsAddCategoryDrawerOpen(false);
+    setIsHistoryDrawerOpen(false);
   };
 
   // Handle category drag-and-drop
@@ -192,6 +197,13 @@ function Board() {
       bgColor: "var(--primary-color)",
       ariaLabel: "Add Category",
     },
+    {
+      icon: faHistory,
+      label: "Activity Logs",
+      onClick: openHistory,
+      bgColor: "var(--primary-color)",
+      ariaLabel: "Add Category",
+    },
   ];
 
   return (
@@ -205,6 +217,13 @@ function Board() {
         </Drawer>
         <Drawer isOpen={isAddCategoryDrawerOpen} onClose={closeDrawer}>
           <CategoryManagement onClose={closeDrawer} />
+        </Drawer>
+        <Drawer
+          isOpen={isHistoryDrawerOpen}
+          onClose={closeDrawer}
+          customWidth={"55vw"}
+        >
+          <HistoryLog onClose={closeDrawer} />
         </Drawer>
 
         <div className="board">

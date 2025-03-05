@@ -15,9 +15,18 @@ export const logHistory = async (historyEntry) => {
   }
 };
 
-export const getHistory = async (user_id) => {
+export const getHistory = async (
+  user_id,
+  page = 1,
+  limit = 10,
+  searchQuery = "",
+  filter = "all"
+) => {
   try {
-    const query = `
+    const offset = (page - 1) * limit;
+
+    // Base query
+    let query = `
         SELECT 
           history.*, 
           users.display_name
@@ -28,12 +37,31 @@ export const getHistory = async (user_id) => {
         ON 
           history.user_id = users.id 
         WHERE 
-          history.user_id = ? 
-        ORDER BY 
-          history.timestamp DESC;
-      `;
-    const [history] = await pool.query(query, [user_id]);
+          history.user_id = ?
+    `;
 
+    // Apply filter (ticket or board updates)
+    if (filter !== "all") {
+      query += ` AND history.type = ?`;
+    }
+
+    // Apply search filter
+    if (searchQuery) {
+      query += ` AND (history.details LIKE ? OR history.action LIKE ?)`;
+    }
+
+    query += ` ORDER BY history.timestamp DESC LIMIT ? OFFSET ?;`;
+
+    // Query params
+    const params = [user_id];
+
+    if (filter !== "all") params.push(filter);
+    if (searchQuery) {
+      params.push(`%${searchQuery}%`, `%${searchQuery}%`);
+    }
+    params.push(limit, offset);
+
+    const [history] = await pool.query(query, params);
     return { success: true, data: history };
   } catch (error) {
     throw new Error("Failed to fetch history: " + error.message);
