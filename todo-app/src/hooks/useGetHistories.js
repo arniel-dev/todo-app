@@ -1,17 +1,57 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useQuery } from "@tanstack/react-query";
-import useAuth from "./useAuth";
+import { useState } from "react";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchHistories } from "../services/ticketService";
 
-function useGetHistories() {
-  const { userInfo } = useAuth();
-  const { data: histories } = useQuery({
-    queryKey: ["histories", userInfo.user_id],
-    queryFn: () => fetchHistories(userInfo.user_id),
-    placeholderData: [],
-  });
+const useGetHistories = (user_id) => {
+  const queryClient = useQueryClient();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState("all");
 
-  return { histories };
-}
+  // Infinite Query for Paginated History Fetching
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
+    useInfiniteQuery({
+      queryKey: ["histories", user_id, searchQuery, filter],
+      queryFn: async ({ pageParam = 1 }) => {
+        const response = await fetchHistories(
+          user_id,
+          pageParam,
+          searchQuery,
+          filter
+        );
+        return response.data;
+      },
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length > 0 ? allPages.length + 1 : undefined;
+      },
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+    });
+
+  // Combine all fetched pages
+  const histories = data?.pages?.flat() || [];
+
+  // Load More Function
+  const loadMoreHistories = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  // **Fixed: Properly trigger refetch when search/filter changes**
+  const applyFilters = () => {
+    queryClient.invalidateQueries(["histories", user_id]); // Clear cache
+    refetch(); // Fetch fresh data
+  };
+
+  return {
+    histories,
+    loadMoreHistories,
+    hasMore: hasNextPage,
+    setSearchQuery,
+    setFilter,
+    applyFilters,
+    isFetchingNextPage,
+  };
+};
 
 export default useGetHistories;
