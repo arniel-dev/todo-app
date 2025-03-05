@@ -119,6 +119,7 @@ project-root/
 │   │   ├── api/          # API services
 │   │   ├── App.jsx       # Main app component
 │   │   └── main.jsx      # Entry point
+│   ├── .env          # Source files
 │   ├── package.json  # Frontend dependencies
 │   └── ...           # Other frontend files
 │
