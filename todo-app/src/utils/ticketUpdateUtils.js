@@ -14,7 +14,6 @@ export const ticketToastMessage = (currentTicket, update, categories = []) => {
     const category = categories?.find(
       (item) => item.id === update?.category_id
     );
-    console.log();
     toast.success(
       `Ticket "${currentTicket.title}" Category label was updated to "${category?.name}"`
     );

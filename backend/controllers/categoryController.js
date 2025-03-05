@@ -46,7 +46,7 @@ export const createCategory = async (req, res) => {
 export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { order, name } = req.body;
+    const { order, name, user_id } = req.body;
 
     if (!id) {
       return res.status(400).json({ error: "ID is required" });
@@ -58,7 +58,7 @@ export const updateCategory = async (req, res) => {
         .json({ error: "At least one field (name or order) is required" });
     }
 
-    const response = await updateCategoryDetails(id, name, order);
+    const response = await updateCategoryDetails(id, name, order, user_id);
 
     if (response.success) {
       return res.status(200).json(response.data);

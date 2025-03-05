@@ -7,7 +7,6 @@ const useGetHistories = (user_id) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
 
-  // Infinite Query for Paginated History Fetching
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
     useInfiniteQuery({
       queryKey: ["histories", user_id, searchQuery, filter],
@@ -37,10 +36,9 @@ const useGetHistories = (user_id) => {
     }
   };
 
-  // **Fixed: Properly trigger refetch when search/filter changes**
   const applyFilters = () => {
-    queryClient.invalidateQueries(["histories", user_id]); // Clear cache
-    refetch(); // Fetch fresh data
+    queryClient.invalidateQueries(["histories", user_id]);
+    refetch();
   };
 
   return {

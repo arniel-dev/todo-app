@@ -1,4 +1,5 @@
 import { pool } from "../config/db.js";
+import { logHistory } from "./historyService.js";
 
 export const getCategories = async (user_id) => {
   try {
@@ -35,18 +36,31 @@ export const addCategory = async (name, user_id, order) => {
     const query =
       "INSERT INTO categories (name, user_id, `order`) VALUES (?, ?, ?)";
 
-    await pool.query(query, [name, user_id, order]);
-
+    const result = await pool.query(query, [name, user_id, order]);
+    await logHistory({
+      type: "BOARD_UPDATE",
+      action: "CATEGORY CREATED",
+      details: {
+        ticketId: result.insertId,
+        category_name: name,
+        user_id,
+        order,
+      },
+      user_id,
+    });
     return { success: true, message: "Category added successfully" };
   } catch (error) {
     throw new Error();
   }
 };
 
-export const updateCategoryDetails = async (id, name, order) => {
+export const updateCategoryDetails = async (id, name, order, user_id) => {
   try {
     let columnsToUpdate = [];
     let values = [];
+
+    const selectCategoryQuery = "SELECT * FROM categories WHERE id = ?";
+    const [oldCategory] = await pool.query(selectCategoryQuery, [id]);
 
     if (name) {
       columnsToUpdate.push("name = ?");
@@ -66,6 +80,22 @@ export const updateCategoryDetails = async (id, name, order) => {
 
     await pool.query(query, values);
 
+    await logHistory({
+      type: "BOARD_UPDATE",
+      action: "CATEGORY UPDATED",
+      details: {
+        category_id: id,
+        oldData: {
+          ...oldCategory[0],
+        },
+        newData: {
+          category_name: name,
+          user_id,
+          order,
+        },
+      },
+      user_id,
+    });
     return { success: true, message: "Update Category was successfully" };
   } catch (error) {
     return { success: false, message: "Failed to update category" };
@@ -74,9 +104,24 @@ export const updateCategoryDetails = async (id, name, order) => {
 
 export const deleteCategory = async (id) => {
   try {
-    const query = `DELETE FROM categories WHERE id=?`;
+    const selectCategoryQuery = "SELECT * FROM categories WHERE id = ?";
+    const [oldCategory] = await pool.query(selectCategoryQuery, [id]);
+    const { name, order, user_id } = oldCategory[0];
+    const deleteQuery = `DELETE FROM categories WHERE id=?`;
 
-    await pool.query(query, [id]);
+    await pool.query(deleteQuery, [id]);
+
+    await logHistory({
+      type: "BOARD_UPDATE",
+      action: "CATEGORY DELETED",
+      details: {
+        category_id: id,
+        category_name: name,
+        order,
+        user_id,
+      },
+      user_id,
+    });
 
     return { success: true, message: "Category deleted successfully" };
   } catch (error) {

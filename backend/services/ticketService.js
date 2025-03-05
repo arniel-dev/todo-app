@@ -60,9 +60,18 @@ export const getTickets = async (user_id) => {
 export const deleteTicket = async (id) => {
   try {
     const query = `DELETE FROM tickets WHERE id=?`;
-
+    const selectTicketQuery = "SELECT * FROM tickets WHERE id = ?";
+    const [oldTicket] = await pool.query(selectTicketQuery, [id]);
     await pool.query(query, [id]);
-
+    await logHistory({
+      type: "TICKET_UPDATE",
+      action: "TICKET DELETED",
+      details: {
+        ticketId: id,
+        ...oldTicket[0],
+      },
+      user_id: oldTicket[0].user_id,
+    });
     return { success: true, message: "Ticket deleted successfully" };
   } catch (error) {
     throw new Error();
@@ -90,7 +99,7 @@ export const updateTicket = async (id, ticket) => {
     // Log history
     await logHistory({
       type: "TICKET_UPDATE",
-      action: "TICKET_UPDATED",
+      action: "TICKET UPDATED",
       details: {
         ticketId: id,
         oldData: {
