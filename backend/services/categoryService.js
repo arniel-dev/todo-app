@@ -6,6 +6,17 @@ export const getCategories = async (user_id) => {
     const query = "SELECT * FROM categories WHERE user_id = ?";
     const [categories] = await pool.query(query, [user_id]);
 
+    return { success: true, data: categories };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const generateDefault = async (user_id) => {
+  try {
+    const query = "SELECT * FROM categories WHERE user_id = ?";
+    const [categories] = await pool.query(query, [user_id]);
+
     // Insert Default Categories if none exist
     if (categories.length === 0) {
       const insertQuery = `INSERT INTO categories (name, user_id, \`order\`) VALUES ?`;
@@ -15,11 +26,23 @@ export const getCategories = async (user_id) => {
         ["Done", user_id, 3],
       ];
 
-      // Insert default categories
       await pool.query(insertQuery, [values]);
 
-      // Fetch the newly inserted categories
       const [newCategories] = await pool.query(query, [user_id]);
+
+      for (const category of newCategories) {
+        await logHistory({
+          type: "BOARD_UPDATE",
+          action: "CATEGORY CREATED",
+          details: {
+            ticketId: category.id,
+            category_name: category.name,
+            user_id: user_id,
+            order: category.order,
+          },
+          user_id: user_id,
+        });
+      }
 
       return { success: true, data: newCategories };
     }
@@ -106,7 +129,7 @@ export const deleteCategory = async (id) => {
   try {
     const selectCategoryQuery = "SELECT * FROM categories WHERE id = ?";
     const [oldCategory] = await pool.query(selectCategoryQuery, [id]);
-    const { name, order, user_id } = oldCategory[0];
+
     const deleteQuery = `DELETE FROM categories WHERE id=?`;
 
     await pool.query(deleteQuery, [id]);
@@ -116,15 +139,14 @@ export const deleteCategory = async (id) => {
       action: "CATEGORY DELETED",
       details: {
         category_id: id,
-        category_name: name,
-        order,
-        user_id,
+        ...oldCategory[0],
       },
-      user_id,
+      user_id: oldCategory[0]?.user_id,
     });
 
     return { success: true, message: "Category deleted successfully" };
   } catch (error) {
+    console.log(error);
     throw new Error();
   }
 };

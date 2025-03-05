@@ -22,11 +22,14 @@ import FloatingMenuButton from "../components/FloatingMenuButton";
 import { toast } from "react-toastify";
 import { ticketToastMessage } from "../utils/ticketUpdateUtils";
 import HistoryLog from "../components/HistoryLog";
+import Button from "../components/Button";
+import useGenerateDefaultCategories from "../hooks/useGenerateDefaultCategories";
 
 function Board() {
   const { categories, tickets } = useTicketStore();
   useGetCategories();
   useGetTickets();
+  const { refetch } = useGenerateDefaultCategories();
   const updateTicket = useUpdateTicket();
   const updateCategoryMutation = useUpdateCategory();
   const [draggingTicketId, setDraggingTicketId] = useState(null);
@@ -205,6 +208,10 @@ function Board() {
       ariaLabel: "Add Category",
     },
   ];
+  const handleGenerate = (e) => {
+    e.preventDefault();
+    refetch();
+  };
 
   return (
     <>
@@ -251,6 +258,11 @@ function Board() {
                 handleUpdateTicket={handleUpdateTicket}
               />
             ))}
+          {categories?.length < 1 && (
+            <Button className="button" onClick={(e) => handleGenerate(e)}>
+              Generate Default Category
+            </Button>
+          )}
         </div>
       </div>
     </>

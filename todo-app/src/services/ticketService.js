@@ -9,6 +9,17 @@ export const fetchCategories = async (userId) => {
   }
 };
 
+export const generateDefaultCategories = async (userId) => {
+  try {
+    const response = await axios.get(
+      `api/generate-categories?user_id=${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const fetchTickets = async (userId) => {
   try {
     const response = await axios.get(`api/tickets?user_id=${userId}`);
