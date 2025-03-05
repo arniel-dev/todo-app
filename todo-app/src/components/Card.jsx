@@ -58,6 +58,12 @@ const Card = ({
     handleDescriptionEdit(null, ""); // Exit edit mode
   };
 
+  const handleDelete = (id, title) => {
+    deleteMutation.mutate(id);
+    console.log(deleteMutation.isSuccess);
+    toast.success(`Ticket "${title}" was successfully deleted`);
+  };
+
   return (
     <div
       className={`ticket-card ${isDragging ? "dragging" : ""} ${
@@ -75,7 +81,7 @@ const Card = ({
       <div className="card-header">
         <h3>{ticket.title}</h3>
         <button
-          onClick={() => deleteMutation.mutate(ticket.id)}
+          onClick={() => handleDelete(ticket.id, ticket.title)}
           className="delete-button"
         >
           <span className="delete-icon">&times;</span>

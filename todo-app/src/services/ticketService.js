@@ -9,6 +9,17 @@ export const fetchCategories = async (userId) => {
   }
 };
 
+export const generateDefaultCategories = async (userId) => {
+  try {
+    const response = await axios.get(
+      `api/generate-categories?user_id=${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const fetchTickets = async (userId) => {
   try {
     const response = await axios.get(`api/tickets?user_id=${userId}`);
@@ -48,22 +59,23 @@ export const deleteTicket = async (id) => {
   }
 };
 
-export const createCategory = async ({ category, userId }) => {
+export const createCategory = async ({ category, user_id }) => {
   try {
     const response = await axios.post("http://localhost:5000/api/category", {
       ...category,
-      user_id: userId,
+      user_id: user_id,
     });
     return response.data;
   } catch (error) {
     throw new Error(error);
   }
 };
-export const updateCategory = async ({ categoryId, order, name }) => {
+export const updateCategory = async ({ categoryId, order, name, user_id }) => {
   try {
     const response = await axios.put(`api/category/${categoryId}`, {
       order,
       name,
+      user_id,
     });
     return response.data;
   } catch (error) {

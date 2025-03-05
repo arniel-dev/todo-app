@@ -3,6 +3,7 @@ import {
   addCategory,
   updateCategoryDetails,
   deleteCategory,
+  generateDefault,
 } from "../services/categoryService.js";
 
 export const retrieveCategories = async (req, res) => {
@@ -19,6 +20,24 @@ export const retrieveCategories = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Retriving categories failed. Please try again later.",
+    });
+  }
+};
+
+export const generateDefaultCategories = async (req, res) => {
+  try {
+    const { user_id } = req.query;
+
+    const response = await generateDefault(user_id);
+    if (response.success) {
+      return res.status(200).json(response.data);
+    } else {
+      return res.status(400).json(response);
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Generate categories failed. Please try again later.",
     });
   }
 };
@@ -46,7 +65,7 @@ export const createCategory = async (req, res) => {
 export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { order, name } = req.body;
+    const { order, name, user_id } = req.body;
 
     if (!id) {
       return res.status(400).json({ error: "ID is required" });
@@ -58,7 +77,7 @@ export const updateCategory = async (req, res) => {
         .json({ error: "At least one field (name or order) is required" });
     }
 
-    const response = await updateCategoryDetails(id, name, order);
+    const response = await updateCategoryDetails(id, name, order, user_id);
 
     if (response.success) {
       return res.status(200).json(response.data);

@@ -121,8 +121,12 @@ function formatDetails(details) {
       ...details,
       oldData: {
         ...details.oldData,
-        created_at: new Date(details?.oldData?.created_at).toLocaleString(),
-        expiry_date: new Date(details?.oldData?.expiry_date).toLocaleString(),
+        created_at: details.oldData?.created_at
+          ? new Date(details.oldData.created_at).toLocaleString()
+          : details.oldData.created_at,
+        expiry_date: details.oldData?.expiry_date
+          ? new Date(details.oldData.expiry_date).toLocaleString()
+          : details.oldData.expiry_date,
       },
     };
   } else {

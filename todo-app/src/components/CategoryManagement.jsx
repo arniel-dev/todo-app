@@ -41,7 +41,7 @@ const CategoryManagement = ({ onClose }) => {
       name: currentCategory.name,
       order: order,
     };
-    addCategory.mutate({ category: newCategory, userId: userInfo.user_id });
+    addCategory.mutate({ category: newCategory, user_id: userInfo.user_id });
     if (addCategory.isSuccess) {
       toast.success(`Category "${newCategory.name}" was successfully created"`);
     }
@@ -64,6 +64,7 @@ const CategoryManagement = ({ onClose }) => {
     updateCategory.mutate({
       categoryId: id,
       name: editedCategory.name,
+      user_id: userInfo.user_id,
     });
     if (updateCategory.isSuccess) {
       toast.success(
@@ -77,6 +78,13 @@ const CategoryManagement = ({ onClose }) => {
     if (deleteCategory.isSuccess) {
       const deletedCategory = categories.find((item) => item.id === id);
       toast.success(`Category "${deletedCategory.name}" was deleted"`);
+    } else {
+      toast.error(
+        `"${
+          deleteCategory.error.message ??
+          "Error cannot be deleted, you have an existing ticket under this category"
+        }`
+      );
     }
   };
 
