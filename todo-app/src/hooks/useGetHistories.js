@@ -49,6 +49,8 @@ const useGetHistories = (user_id) => {
     setFilter,
     applyFilters,
     isFetchingNextPage,
+    filter,
+    queryClient,
   };
 };
 
