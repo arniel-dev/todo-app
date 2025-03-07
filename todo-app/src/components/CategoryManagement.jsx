@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   faEdit,
   faSave,
@@ -15,8 +15,12 @@ import { useAddCategory } from "../hooks/useAddCategory";
 import useAuth from "../hooks/useAuth";
 import { useDeleteCategory } from "../hooks/useDeleteCategory";
 import { toast } from "react-toastify";
+import useGetCategories from "../hooks/useGetCategories";
+import Loader from "./Loader";
+
 const CategoryManagement = ({ onClose }) => {
-  const { categories, setCategories } = useTicketStore();
+  const { categories, isLoading } = useGetCategories();
+  const { setCategories } = useTicketStore();
   const { userInfo } = useAuth();
   const [currentCategory, setCurrentCategory] = useState({
     id: null,
@@ -87,7 +91,7 @@ const CategoryManagement = ({ onClose }) => {
       );
     }
   };
-
+  if (isLoading) return <Loader />;
   return (
     <div className="category-management">
       <div className="header">
@@ -157,5 +161,6 @@ const CategoryManagement = ({ onClose }) => {
 };
 CategoryManagement.propTypes = {
   onClose: PropTypes.func,
+  isOpen: PropTypes.bool,
 };
 export default CategoryManagement;
