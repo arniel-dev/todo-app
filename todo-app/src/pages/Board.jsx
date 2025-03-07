@@ -230,7 +230,7 @@ function Board() {
           onClose={closeDrawer}
           customWidth={"55vw"}
         >
-          <HistoryLog onClose={closeDrawer} />
+          <HistoryLog isOpen={isHistoryDrawerOpen} onClose={closeDrawer} />
         </Drawer>
 
         <div className="board">
