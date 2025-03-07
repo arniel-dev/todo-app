@@ -8,7 +8,7 @@ import { fetchCategories } from "../services/ticketService";
 function useGetCategories() {
   const { setCategories } = useTicketStore();
   const { userInfo } = useAuth();
-  const { data: categories } = useQuery({
+  const { data: categories, isLoading } = useQuery({
     queryKey: ["categories", userInfo.user_id],
     queryFn: () => fetchCategories(userInfo.user_id),
     placeholderData: [],
@@ -16,7 +16,7 @@ function useGetCategories() {
   useEffect(() => {
     if (categories) setCategories(categories);
   }, [categories]);
-  return { categories };
+  return { categories, isLoading };
 }
 
 export default useGetCategories;

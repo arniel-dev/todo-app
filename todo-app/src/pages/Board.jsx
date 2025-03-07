@@ -24,10 +24,12 @@ import { ticketToastMessage } from "../utils/ticketUpdateUtils";
 import HistoryLog from "../components/HistoryLog";
 import Button from "../components/Button";
 import useGenerateDefaultCategories from "../hooks/useGenerateDefaultCategories";
+import Loader from "../components/Loader";
 
 function Board() {
-  const { categories, tickets } = useTicketStore();
-  useGetCategories();
+  const { tickets } = useTicketStore();
+  const { categories, isLoading } = useGetCategories();
+
   useGetTickets();
   const { refetch } = useGenerateDefaultCategories();
   const updateTicket = useUpdateTicket();
@@ -212,6 +214,7 @@ function Board() {
     e.preventDefault();
     refetch();
   };
+  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -223,7 +226,10 @@ function Board() {
           <AddTicketForm onClose={closeDrawer} />
         </Drawer>
         <Drawer isOpen={isAddCategoryDrawerOpen} onClose={closeDrawer}>
-          <CategoryManagement onClose={closeDrawer} />
+          <CategoryManagement
+            isOpen={isAddCategoryDrawerOpen}
+            onClose={closeDrawer}
+          />
         </Drawer>
         <Drawer
           isOpen={isHistoryDrawerOpen}

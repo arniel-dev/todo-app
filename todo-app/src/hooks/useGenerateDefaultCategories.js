@@ -9,7 +9,7 @@ function useGenerateDefaultCategories() {
   const { setCategories } = useTicketStore();
   const { userInfo } = useAuth();
   const { data: categories, refetch } = useQuery({
-    queryKey: ["generateCategories", userInfo.user_id],
+    queryKey: ["categories", userInfo.user_id],
     queryFn: () => generateDefaultCategories(userInfo.user_id),
     placeholderData: [],
     enabled: false,
