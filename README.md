@@ -6,7 +6,7 @@ A modern and efficient To-Do Board application to help you manage your tasks sea
 
 ## 📌 Table of Contents
 
-- [Features](#features)
+- [Features](#features) 
 - [Installation](#installation)
   - [Prerequisites](#prerequisites)
   - [Backend Setup](#backend-setup)
@@ -159,7 +159,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **React Hook Form** - For making form handling a breeze.
 - **MySQL** - For reliable data storage.
 
----
+--- 
 
 ## 📬 Contact
 
