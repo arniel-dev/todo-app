@@ -19,7 +19,8 @@ import useGetCategories from "../hooks/useGetCategories";
 import Loader from "./Loader";
 
 const CategoryManagement = ({ onClose }) => {
-  const { categories, isLoading } = useGetCategories();
+  const { categories } = useTicketStore();
+  const { isLoading } = useGetCategories();
   const { setCategories } = useTicketStore();
   const { userInfo } = useAuth();
   const [currentCategory, setCurrentCategory] = useState({
