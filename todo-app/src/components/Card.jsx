@@ -4,22 +4,20 @@ import "../styles/card.scss";
 import { useDeleteTicket } from "../hooks/useDeleteTicket";
 import { isExpiryApproaching, isExpired } from "../utils/dateUtils";
 import { toast } from "react-toastify";
+import { useUpdateTicket } from "../hooks/useUpdateTicket";
+import useTicketStore from "../store/ticketStore";
 
-const Card = ({
-  ticket,
-  isDragging,
-  onDragStart,
-  onDragOver,
-  onDrop,
-  editingTicketId,
-  draftDescription,
-  handleDescriptionEdit,
-  handlePriorityChange,
-  handleUpdateTicket,
-}) => {
+const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
   const deleteMutation = useDeleteTicket();
+  const {
+    handleUpdateTicket,
+    handleDescriptionEdit,
+    editingTicketId,
+    draftDescription,
+  } = useTicketStore();
   const [localDraftDescription, setLocalDraftDescription] =
     useState(draftDescription);
+  const updateTicketMutate = useUpdateTicket();
 
   const [hasNotified, setHasNotified] = useState(false);
 
@@ -53,14 +51,17 @@ const Card = ({
 
   const handleDescriptionBlur = () => {
     if (localDraftDescription !== ticket.description) {
-      handleUpdateTicket(ticket.id, { description: localDraftDescription });
+      handleUpdateTicket(
+        ticket.id,
+        { description: localDraftDescription },
+        updateTicketMutate
+      );
     }
     handleDescriptionEdit(null, ""); // Exit edit mode
   };
 
   const handleDelete = (id, title) => {
     deleteMutation.mutate(id);
-    console.log(deleteMutation.isSuccess);
     toast.success(`Ticket "${title}" was successfully deleted`);
   };
 
@@ -107,7 +108,13 @@ const Card = ({
           Priority:
           <select
             value={ticket.priority}
-            onChange={(e) => handlePriorityChange(ticket.id, e.target.value)}
+            onChange={(e) =>
+              handleUpdateTicket(
+                ticket.id,
+                { priority: e.target.value },
+                updateTicketMutate
+              )
+            }
             className={`priority-${ticket.priority.toLowerCase()}`}
           >
             <option style={{ backgroundColor: "#ccffcc" }} value="Low">
@@ -140,12 +147,6 @@ Card.propTypes = {
   onDragStart: PropTypes.func.isRequired,
   onDragOver: PropTypes.func.isRequired,
   onDrop: PropTypes.func.isRequired,
-  editingTicketId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  draftDescription: PropTypes.string,
-  handleUpdateTicket: PropTypes.func.isRequired,
-  handleDescriptionEdit: PropTypes.func.isRequired,
-  handlePriorityChange: PropTypes.func.isRequired,
-  deleteticket: PropTypes.func.isRequired,
 };
 
 export default Card;
