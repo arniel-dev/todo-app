@@ -2,26 +2,26 @@ import React from "react";
 import PropTypes from "prop-types";
 import TicketList from "./TicketList";
 import "../styles/category.scss";
+import { useUpdateCategory } from "../hooks/useUpdateCategory";
+import useTicketStore from "../store/ticketStore";
+import { useUpdateTicket } from "../hooks/useUpdateTicket";
 
-const Category = ({
-  category,
-  draggingTicketId,
-  dragOverCategoryId,
-  handleTicketDragStart,
-  handleTicketDragOver,
-  handleTicketDrop,
-  handleCategoryDragStart,
-  handleCategoryDragOver,
-  handleCategoryDrop,
-  editingTicketId,
-  draftDescription,
-  setDraftDescription,
-  handleDescriptionEdit,
-  handlePriorityChange,
-  handlePriorityDragOver,
-  handlePriorityDrop,
-  handleUpdateTicket,
-}) => {
+const Category = ({ category }) => {
+  const updateCategoryMutation = useUpdateCategory();
+  const updateTicketMutation = useUpdateTicket();
+  const {
+    handleCategoryDrop,
+    setDraggingCategoryId,
+    handleTicketDrop,
+    dragOverCategoryId,
+    draggingTicketId,
+    setDragOverCategoryId,
+  } = useTicketStore();
+
+  const handleCategoryDragOver = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <>
       <div
@@ -29,28 +29,25 @@ const Category = ({
           dragOverCategoryId === category.id ? "drag-over" : ""
         }`}
         draggable
-        onDragStart={(e) => handleCategoryDragStart(e, category.id)}
+        onDragStart={() => setDraggingCategoryId(category.id)}
         onDragOver={handleCategoryDragOver}
-        onDrop={(e) => handleCategoryDrop(e, category.id)}
+        onDrop={(e) =>
+          handleCategoryDrop(e, category.id, updateCategoryMutation)
+        }
       >
         <h2>{category.name}</h2>
         <div
           className="ticket-container"
-          onDragOver={(e) => handleTicketDragOver(e, category.id)}
-          onDrop={(e) => handleTicketDrop(e, category.id)}
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setDragOverCategoryId(e, category.id);
+          }}
+          onDrop={(e) => handleTicketDrop(e, category.id, updateTicketMutation)}
         >
           <TicketList
             categoryId={category.id}
             draggingTicketId={draggingTicketId}
-            handleTicketDragStart={handleTicketDragStart}
-            handlePriorityDragOver={handlePriorityDragOver}
-            handlePriorityDrop={handlePriorityDrop}
-            editingTicketId={editingTicketId}
-            draftDescription={draftDescription}
-            setDraftDescription={setDraftDescription}
-            handleDescriptionEdit={handleDescriptionEdit}
-            handlePriorityChange={handlePriorityChange}
-            handleUpdateTicket={handleUpdateTicket} // Pass this function
           />
         </div>
       </div>
@@ -64,22 +61,6 @@ Category.propTypes = {
     name: PropTypes.string.isRequired,
     order: PropTypes.number.isRequired,
   }).isRequired,
-  draggingTicketId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  dragOverCategoryId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  handleTicketDragStart: PropTypes.func.isRequired,
-  handleTicketDragOver: PropTypes.func.isRequired,
-  handleTicketDrop: PropTypes.func.isRequired,
-  handleCategoryDragStart: PropTypes.func.isRequired,
-  handleCategoryDragOver: PropTypes.func.isRequired,
-  handleCategoryDrop: PropTypes.func.isRequired,
-  editingTicketId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  draftDescription: PropTypes.string,
-  setDraftDescription: PropTypes.func.isRequired,
-  handleDescriptionEdit: PropTypes.func.isRequired,
-  handlePriorityChange: PropTypes.func.isRequired,
-  handlePriorityDragOver: PropTypes.func.isRequired,
-  handlePriorityDrop: PropTypes.func.isRequired,
-  handleUpdateTicket: PropTypes.func.isRequired,
 };
 
 export default Category;
