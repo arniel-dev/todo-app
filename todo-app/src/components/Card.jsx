@@ -14,9 +14,13 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
     handleDescriptionEdit,
     editingTicketId,
     draftDescription,
+    enableEditTitleId,
+    handleTitleEdit,
+    draftTitle,
   } = useTicketStore();
   const [localDraftDescription, setLocalDraftDescription] =
     useState(draftDescription);
+  const [localDraftTitle, setLocalDraftTitle] = useState(draftTitle);
   const updateTicketMutate = useUpdateTicket();
 
   const [hasNotified, setHasNotified] = useState(false);
@@ -44,12 +48,18 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
     }
   }, [editingTicketId, draftDescription, ticket.id]);
 
+  useEffect(() => {
+    if (enableEditTitleId === ticket.id) {
+      setLocalDraftTitle(draftTitle);
+    }
+  }, [enableEditTitleId, draftTitle, ticket.id]);
+
   // Handle description change locally
   const handleDescriptionChange = (e) => {
     setLocalDraftDescription(e.target.value);
   };
 
-  const handleDescriptionBlur = () => {
+  const handleBlur = () => {
     if (localDraftDescription !== ticket.description) {
       handleUpdateTicket(
         ticket.id,
@@ -57,7 +67,16 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
         updateTicketMutate
       );
     }
-    handleDescriptionEdit(null, ""); // Exit edit mode
+
+    if (localDraftTitle !== ticket.title) {
+      handleUpdateTicket(
+        ticket.id,
+        { title: localDraftTitle },
+        updateTicketMutate
+      );
+    }
+    handleTitleEdit(null, "");
+    handleDescriptionEdit(null, "");
   };
 
   const handleDelete = (id, title) => {
@@ -80,7 +99,19 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
       onDrop={onDrop}
     >
       <div className="card-header">
-        <h3>{ticket.title}</h3>
+        {enableEditTitleId === ticket.id ? (
+          <input
+            value={localDraftTitle}
+            onChange={(e) => setLocalDraftTitle(e.target.value)}
+            onBlur={handleBlur}
+            autoFocus
+            className="title-input"
+          ></input>
+        ) : (
+          <h3 onClick={() => handleTitleEdit(ticket.id, ticket.title)}>
+            {ticket.title || "Add a Title..."}
+          </h3>
+        )}
         <button
           onClick={() => handleDelete(ticket.id, ticket.title)}
           className="delete-button"
@@ -93,7 +124,7 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
         <textarea
           value={localDraftDescription}
           onChange={handleDescriptionChange}
-          onBlur={handleDescriptionBlur} // Triggered when clicking outside
+          onBlur={handleBlur} // Triggered when clicking outside
           autoFocus
           className="description-input"
         />
