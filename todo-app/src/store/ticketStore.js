@@ -10,9 +10,11 @@ const useTicketStore = create((set, get) => ({
   dragOverCategoryId: null,
   draggingCategoryId: null,
   draftDescription: "",
+  draftTitle: "",
   isAddTicketDrawerOpen: false,
   isAddCategoryDrawerOpen: false,
   isHistoryDrawerOpen: false,
+  enableEditTitleId: null,
 
   //setter
   setCategories: (categories) => set({ categories }),
@@ -22,6 +24,8 @@ const useTicketStore = create((set, get) => ({
   setDragOverCategoryId: (value) => set(() => ({ dragOverCategoryId: value })),
   setDraggingCategoryId: (value) => set(() => ({ draggingCategoryId: value })),
   setDraftDescription: (value) => set(() => ({ draftDescription: value })),
+  setDraftTitle: (value) => set(() => ({ draftTitle: value })),
+  setEnableEditTitleId: (value) => set(() => ({ enableEditTitleId: value })),
   setIsAddTicketDrawerOpen: (value) =>
     set(() => ({ isAddTicketDrawerOpen: value })),
   setIsAddCategoryDrawerOpen: (value) =>
@@ -164,6 +168,11 @@ const useTicketStore = create((set, get) => ({
     const { setEditingTicketId, setDraftDescription } = get();
     setEditingTicketId(ticketId);
     setDraftDescription(description);
+  },
+  handleTitleEdit: (ticketId, title) => {
+    const { setEnableEditTitleId, setDraftTitle } = get();
+    setEnableEditTitleId(ticketId);
+    setDraftTitle(title);
   },
 }));
 
