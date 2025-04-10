@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Card from "./Card";
 import "../styles/ticketList.scss";
 import useTicketStore from "../store/ticketStore";
+import { useUpdateTicket } from "../hooks/useUpdateTicket";
 
 const priorityMap = {
   Low: 1,
@@ -10,20 +11,10 @@ const priorityMap = {
   High: 3,
 };
 
-const TicketList = ({
-  categoryId,
-  draggingTicketId,
-  handleTicketDragStart,
-  handlePriorityDragOver,
-  handlePriorityDrop,
-  editingTicketId,
-  draftDescription,
-  setDraftDescription,
-  handleDescriptionEdit,
-  handlePriorityChange,
-  handleUpdateTicket,
-}) => {
-  const { tickets } = useTicketStore();
+const TicketList = ({ categoryId }) => {
+  const { tickets, handlePriorityDrop, setDraggingTicketId, draggingTicketId } =
+    useTicketStore();
+  const updateTicketMutate = useUpdateTicket();
   return (
     <div className="tickets-list">
       {tickets
@@ -36,15 +27,9 @@ const TicketList = ({
             key={ticket.id}
             ticket={ticket}
             isDragging={draggingTicketId === ticket.id}
-            onDragStart={(e) => handleTicketDragStart(e, ticket.id)}
-            onDragOver={handlePriorityDragOver}
-            onDrop={(e) => handlePriorityDrop(e, ticket.id)}
-            editingTicketId={editingTicketId}
-            draftDescription={draftDescription}
-            setDraftDescription={setDraftDescription}
-            handleDescriptionEdit={handleDescriptionEdit}
-            handlePriorityChange={handlePriorityChange}
-            handleUpdateTicket={handleUpdateTicket} // Pass this function
+            onDragStart={() => setDraggingTicketId(ticket.id)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => handlePriorityDrop(e, ticket.id, updateTicketMutate)}
           />
         ))}
     </div>
@@ -52,29 +37,8 @@ const TicketList = ({
 };
 
 TicketList.propTypes = {
-  tickets: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string,
-      expiry_date: PropTypes.string.isRequired,
-      priority: PropTypes.string.isRequired,
-      category_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-        .isRequired,
-    })
-  ).isRequired,
   categoryId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
-  draggingTicketId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  handleTicketDragStart: PropTypes.func.isRequired,
-  handlePriorityDragOver: PropTypes.func.isRequired,
-  handlePriorityDrop: PropTypes.func.isRequired,
-  editingTicketId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  draftDescription: PropTypes.string,
-  setDraftDescription: PropTypes.func.isRequired,
-  handleDescriptionEdit: PropTypes.func.isRequired,
-  handlePriorityChange: PropTypes.func.isRequired,
-  handleUpdateTicket: PropTypes.func.isRequired,
 };
 
 export default TicketList;

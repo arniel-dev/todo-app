@@ -1,5 +1,4 @@
 import { useForm, Controller } from "react-hook-form";
-import useTicketStore from "../store/ticketStore";
 import "../styles/addTicketForm.scss";
 import useAuth from "../hooks/useAuth";
 import { useAddTicket } from "../hooks/useAddTicket";
@@ -8,8 +7,12 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import useGetCategories from "../hooks/useGetCategories";
 
 function AddTicketForm({ onClose }) {
+  const { categories } = useGetCategories();
+  const addTicket = useAddTicket();
+  const { userInfo } = useAuth();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       title: "",
@@ -19,10 +22,6 @@ function AddTicketForm({ onClose }) {
       category_id: "",
     },
   });
-
-  const addTicket = useAddTicket();
-  const { categories } = useTicketStore();
-  const { userInfo } = useAuth();
 
   // Dynamically set defaultValues when categories are available
   useEffect(() => {

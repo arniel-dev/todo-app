@@ -5,9 +5,9 @@ import { debounce } from "lodash";
 import "../styles/historyLog.scss";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
-const HistoryLog = ({ onClose }) => {
+const HistoryLog = ({ isOpen, onClose }) => {
   const { userInfo } = useAuth();
   const {
     histories,
@@ -16,6 +16,10 @@ const HistoryLog = ({ onClose }) => {
     setSearchQuery,
     applyFilters,
     isFetchingNextPage,
+    setFilter,
+    filter,
+    isApplyingFilters,
+    queryClient,
   } = useGetHistories(userInfo.user_id);
 
   const [searchInput, setSearchInput] = useState("");
@@ -30,6 +34,15 @@ const HistoryLog = ({ onClose }) => {
     return () => delayedSearch.cancel();
   }, [searchInput]);
 
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+    applyFilters();
+  };
+  useEffect(() => {
+    queryClient.invalidateQueries(["histories", userInfo.user_id]);
+    applyFilters();
+  }, [isOpen]);
+
   return (
     <div className="history-log">
       <div className="header">
@@ -41,20 +54,40 @@ const HistoryLog = ({ onClose }) => {
 
       <div className="history-log__filters">
         <div className="history-log__search-container">
+          <select
+            value={filter}
+            onChange={handleFilterChange}
+            className="history-log__filter"
+            aria-label="Filter by type"
+          >
+            <option value="all">All</option>
+            <option value="BOARD_UPDATE">Board Updates</option>
+            <option value="TICKET_UPDATE">Ticket Updates</option>
+          </select>
+          <span></span>
           <input
             type="text"
             placeholder="Search history..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="history-log__search"
+            aria-label="Search history"
           />
           {searchInput && (
             <button
               onClick={() => setSearchInput("")}
               className="history-log__search-button"
+              aria-label="Clear search"
             >
               ✖
             </button>
+          )}
+          {isApplyingFilters && (
+            <FontAwesomeIcon
+              icon={faSpinner}
+              spin
+              className="history-log__spinner"
+            />
           )}
         </div>
       </div>
@@ -133,7 +166,10 @@ function formatDetails(details) {
     return details;
   }
 }
+
 HistoryLog.propTypes = {
   onClose: PropTypes.func,
+  isOpen: PropTypes.bool,
 };
+
 export default HistoryLog;
