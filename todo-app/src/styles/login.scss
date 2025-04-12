@@ -1,14 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap");
 .container {
   position: relative;
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
+  width: 100dvw;
 }
 
 .row {
   display: flex;
   flex-wrap: wrap;
-  height: 100vh;
+  height: 100dvh;
+  width: 100dvw;
 }
 
 .col {
@@ -141,11 +143,13 @@
 
 /* RESPONSIVE */
 
-@media only screen and (max-width: 425px) {
+@media only screen and (max-width: 560px) {
   .container::before,
   .container.sign-in::before,
   .container.sign-up::before {
-    height: 100vh;
+    height: 100dvh;
+    width: 100dvw;
+
     border-bottom-right-radius: 0;
     border-top-left-radius: 0;
     z-index: 0;
