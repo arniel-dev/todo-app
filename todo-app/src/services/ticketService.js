@@ -31,10 +31,7 @@ export const fetchTickets = async (userId) => {
 
 export const createTicket = async (ticket) => {
   try {
-    const response = await axios.post(
-      "http://localhost:5000/api/ticket",
-      ticket
-    );
+    const response = await axios.post("api/ticket", ticket);
     return response.data;
   } catch (error) {
     throw new Error(error);
@@ -61,7 +58,7 @@ export const deleteTicket = async (id) => {
 
 export const createCategory = async ({ category, user_id }) => {
   try {
-    const response = await axios.post("http://localhost:5000/api/category", {
+    const response = await axios.post("api/category", {
       ...category,
       user_id: user_id,
     });
