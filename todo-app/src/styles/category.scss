@@ -8,6 +8,14 @@
   max-width: 300px;
   height: fit-content;
   transition: background-color 0.2s;
+  .column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 4px;
+    height: 30px;
+    cursor: move;
+  }
 
   &.drag-over {
     background-color: #d3e3fd; // Highlight when a task is dragged over

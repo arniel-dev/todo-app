@@ -5,6 +5,8 @@ import "../styles/category.scss";
 import { useUpdateCategory } from "../hooks/useUpdateCategory";
 import useTicketStore from "../store/ticketStore";
 import { useUpdateTicket } from "../hooks/useUpdateTicket";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrows } from "@fortawesome/free-solid-svg-icons";
 
 const Category = ({ category }) => {
   const updateCategoryMutation = useUpdateCategory();
@@ -35,7 +37,11 @@ const Category = ({ category }) => {
           handleCategoryDrop(e, category.id, updateCategoryMutation)
         }
       >
-        <h2>{category.name}</h2>
+        <div className="column-header">
+          <h2>{category.name}</h2>
+          <FontAwesomeIcon icon={faArrows} className="drag-icon" />
+        </div>
+
         <div
           className="ticket-container"
           onDragOver={(e) => {

@@ -1,28 +1,22 @@
-// Ticket card styles
 .ticket-card {
   background-color: var(--white);
+  cursor: move;
   border-radius: 4px;
   padding: 10px;
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
-  cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  border-left: 4px solid transparent; // Default border
-  transition: all 0.3s ease; // Smooth transition for hover effects
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
   &.expiring-soon {
     border-left: 4px solid orange;
     &:hover {
-      background-color: rgba(
-        255,
-        165,
-        0,
-        0.1
-      ); // Light orange background on hover
+      background-color: rgba(255, 165, 0, 0.1);
     }
   }
   &.expired {
     border-left: 4px solid red;
     &:hover {
-      background-color: rgba(255, 0, 0, 0.1); // Light red background on hover
+      background-color: rgba(255, 0, 0, 0.1);
     }
   }
 
@@ -43,8 +37,8 @@
   }
 
   &:hover {
-    transform: scale(1.02); // Slightly enlarge the card on hover
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // Add a shadow on hover
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
   p {
@@ -142,6 +136,7 @@
   h3 {
     display: block;
     width: 100%;
+    cursor: pointer;
     &:hover {
       background-color: var(--color-gray-100);
     }
@@ -194,19 +189,27 @@ h3 {
     font-size: 12px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
 
-  &:hover::after {
-    opacity: 1;
-    visibility: visible;
+  &.default {
+    &:hover::after {
+      display: none;
+    }
   }
 
-  &.expired::after {
-    content: "This ticket has expired";
+  &.expired {
+    &:hover::after {
+      opacity: 1;
+      visibility: visible;
+      content: "This ticket has expired";
+    }
   }
 
-  &.expiring-soon::after {
-    content: "This ticket is expiring soon";
+  &.expiring-soon {
+    &:hover::after {
+      opacity: 1;
+      visibility: visible;
+      content: "This ticket is expiring soon";
+    }
   }
 }

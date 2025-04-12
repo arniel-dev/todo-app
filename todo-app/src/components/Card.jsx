@@ -94,7 +94,7 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
           ? "expired"
           : isExpiryApproaching(ticket.expiry_date)
           ? "expiring-soon"
-          : ""
+          : "default"
       }  priority-${ticket.priority.toLowerCase()}`}
       draggable
       onDragStart={onDragStart}
@@ -112,7 +112,7 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
           ></input>
         ) : (
           <h3 onClick={() => handleTitleEdit(ticket.id, ticket.title)}>
-            {ticket.title || "Add a Title..."}
+            {localDraftTitle || ticket.title || "Add a Title..."}
           </h3>
         )}
         <button
@@ -127,13 +127,15 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
         <textarea
           value={localDraftDescription}
           onChange={handleDescriptionChange}
-          onBlur={handleBlur} // Triggered when clicking outside
+          onBlur={handleBlur}
           autoFocus
           className="description-input"
         />
       ) : (
         <p onClick={() => handleDescriptionEdit(ticket.id, ticket.description)}>
-          {ticket.description || "Add a description..."}
+          {localDraftDescription ||
+            ticket.description ||
+            "Add a description..."}
         </p>
       )}
       <div className="ticket-meta">
