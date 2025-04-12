@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 const useTicketStore = create((set, get) => ({
   categories: [],
   tickets: [],
-  editingTicketId: null,
+  editingDescriptionId: null,
   draggingTicketId: null,
   dragOverCategoryId: null,
   draggingCategoryId: null,
@@ -19,7 +19,7 @@ const useTicketStore = create((set, get) => ({
   //setter
   setCategories: (categories) => set({ categories }),
   setTickets: (tickets) => set({ tickets }),
-  setEditingTicketId: (value) => set(() => ({ editingTicketId: value })),
+  setEditingTicketId: (value) => set(() => ({ editingDescriptionId: value })),
   setDraggingTicketId: (value) => set(() => ({ draggingTicketId: value })),
   setDragOverCategoryId: (value) => set(() => ({ dragOverCategoryId: value })),
   setDraggingCategoryId: (value) => set(() => ({ draggingCategoryId: value })),

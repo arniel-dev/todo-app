@@ -12,7 +12,7 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
   const {
     handleUpdateTicket,
     handleDescriptionEdit,
-    editingTicketId,
+    editingDescriptionId,
     draftDescription,
     enableEditTitleId,
     handleTitleEdit,
@@ -41,12 +41,12 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
     }
   }, [ticket.expiry_date, hasNotified]);
 
-  // Sync localDraftDescription with draftDescription when editingTicketId changes
+  // Sync localDraftDescription with draftDescription when editingDescriptionId changes
   useEffect(() => {
-    if (editingTicketId === ticket.id) {
+    if (editingDescriptionId === ticket.id) {
       setLocalDraftDescription(draftDescription);
     }
-  }, [editingTicketId, draftDescription, ticket.id]);
+  }, [editingDescriptionId, draftDescription, ticket.id]);
 
   useEffect(() => {
     if (enableEditTitleId === ticket.id) {
@@ -60,7 +60,10 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
   };
 
   const handleBlur = () => {
-    if (localDraftDescription !== ticket.description) {
+    if (
+      localDraftDescription !== ticket.description &&
+      !!editingDescriptionId
+    ) {
       handleUpdateTicket(
         ticket.id,
         { description: localDraftDescription },
@@ -68,7 +71,7 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
       );
     }
 
-    if (localDraftTitle !== ticket.title) {
+    if (localDraftTitle !== ticket.title && !!enableEditTitleId) {
       handleUpdateTicket(
         ticket.id,
         { title: localDraftTitle },
@@ -120,7 +123,7 @@ const Card = ({ ticket, isDragging, onDragStart, onDragOver, onDrop }) => {
         </button>
       </div>
 
-      {editingTicketId === ticket.id ? (
+      {editingDescriptionId === ticket.id ? (
         <textarea
           value={localDraftDescription}
           onChange={handleDescriptionChange}
